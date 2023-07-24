@@ -1,14 +1,9 @@
-
-
-
-/*
-    Numerics in the range from 001 to 099 are used for client-server
-    connections only and should never travel between servers.  Replies
-    generated in the response to commands are found in the range from 200
-    to 399.
+/**
+ * Numerics in the range from 001 to 099 are used for client-server
+ * connections only and should never travel between servers.  Replies
+ * generated in the response to commands are found in the range from 200
+ * to 399.
  */
-
-
 public class Numerics {
     // On Join
     static final int RPL_WELCOME = 001; // Sent after register messages... pass message, nickname message, user message

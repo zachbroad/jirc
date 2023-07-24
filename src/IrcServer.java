@@ -5,23 +5,18 @@ import java.util.logging.*;
 
 
 public class IrcServer {
-    ServerSocket server;
+    public static final Logger logger = Logger.getLogger(IrcServer.class.getName());
+    public static IrcServer serverInstance;
     public final String IRC_HOSTNAME = "127.0.0.1";
     public final String name = "IRC";
     public final int IRC_PORT = 6667;
     public final int VERSION = 1;
-
     public LocalDateTime dateTimeCreated;
     public String motd;
-
-    public static IrcServer serverInstance;
     public IrcClientManager clientManager = new IrcClientManager();
     public IrcChannelManager channelManager = new IrcChannelManager();
-
+    ServerSocket server;
     private boolean isRunning = true;
-
-
-    public static final Logger logger = Logger.getLogger(IrcServer.class.getName());
 
     public IrcServer() {
         IrcServer.serverInstance = this;
@@ -37,10 +32,15 @@ public class IrcServer {
 
 
         // Create initial channel
-        this.channelManager.addChannel(new IrcChannel("channel", "lorem ipsum dolor"));
-        this.channelManager.addChannel(new IrcChannel("coding", "std::cout"));
+        this.channelManager.addChannel(new IrcChannel("#channel", "lorem ipsum dolor"));
+        this.channelManager.addChannel(new IrcChannel("#coding", "std::cout"));
     }
 
+    /**
+     * Handle data/messages sent to server from the client
+     *
+     * @param client who is sending the messages
+     */
     void handleClient(IrcClient client) {
         if (!client.socket.isConnected()) return;
 
@@ -64,7 +64,8 @@ public class IrcServer {
             System.out.println(recv);
 
             String[] messages = recv.split("\r\n");
-            IrcServer.logger.info("Got %d messages".formatted(messages.length));
+
+//            IrcServer.logger.info("Got %d messages".formatted(messages.length));
 
 
             for (String message : messages) {
@@ -76,14 +77,27 @@ public class IrcServer {
         }
     }
 
+    /**
+     * Sends a message to all connected clients
+     *
+     * @param message to send
+     */
     void broadcastMessage(String message) {
         for (IrcClient client : clientManager.clients) {
             sendMessageToClient(message, client);
         }
     }
 
+    /**
+     * Sends a message to a specific connected client
+     *
+     * @param message raw message to send
+     * @param client  to send to
+     */
     void sendMessageToClient(String message, IrcClient client) {
-        if (!client.socket.isConnected()) return;
+        if (!client.socket.isConnected()) {
+            IrcServer.logger.warning("Client %s socket not connected.".formatted(client.username));
+        };
 
         try {
             BufferedOutputStream outputStream = new BufferedOutputStream(client.socket.getOutputStream());
@@ -96,17 +110,13 @@ public class IrcServer {
         }
     }
 
+    /**
+     * Set up the server & main loop
+     */
     void startServer() {
         try {
             server = new ServerSocket(IRC_PORT);
             DataInputStream in = null;
-
-
-            // create server socket
-            // bind server socket
-            // start listening
-
-            // Try to accept new clients
 
 //            new Thread(() -> {
 //                while (this.isRunning) {
@@ -127,6 +137,7 @@ public class IrcServer {
             }
 //                }
 //            }).start();
+
 
             while (this.isRunning) {
                 for (IrcClient client : clientManager.clients) {
