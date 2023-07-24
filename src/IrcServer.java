@@ -1,11 +1,7 @@
 import java.io.*;
 import java.net.*;
-import java.text.MessageFormat;
 import java.time.LocalDateTime;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Queue;
 import java.util.logging.*;
 
 
@@ -52,14 +48,20 @@ class IrcClientManager {
 }
 
 public class IrcServer {
-    public static IrcServer serverInstance;
-    final int IRC_PORT = 6667;
-    final String IRC_HOSTNAME = "127.0.0.1";
-    public LocalDateTime dateTimeCreated;
-    public final int VERSION = 1;
-    boolean isRunning = true;
     ServerSocket server;
-    IrcClientManager clientManager = new IrcClientManager();
+    public final String IRC_HOSTNAME = "127.0.0.1";
+    public final String name = "JIRC";
+    public final int IRC_PORT = 6667;
+    public final int VERSION = 1;
+
+    public LocalDateTime dateTimeCreated;
+    public String motd;
+
+    public static IrcServer serverInstance;
+    public IrcClientManager clientManager = new IrcClientManager();
+
+    private boolean isRunning = true;
+
 
     public static final Logger logger = Logger.getLogger(IrcServer.class.getName());
 
@@ -71,6 +73,9 @@ public class IrcServer {
 
         // TODO: store in config
         dateTimeCreated = LocalDateTime.now();
+
+        // todo load from file
+        this.motd = "MOTD goes here";
     }
 
     void handleClient(IrcClient client) {

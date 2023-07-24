@@ -1,6 +1,5 @@
 import java.text.MessageFormat;
 import java.util.ArrayDeque;
-import java.util.Arrays;
 import java.util.Queue;
 
 
@@ -64,11 +63,55 @@ public class Messages {
 
         server.sendMessage(
                 MessageFormat.format(
-                        ":{0} {1} {2} :JIRC v1 NULL NULL\r\n", // todo
+                        ":{0} {1} {2} :{3} v1 NULL NULL\r\n", // todo
                         server.IRC_HOSTNAME,
                         Numerics.RPL_MYINFO,
                         client.nickname,
-                        server.dateTimeCreated.toString()
+                        server.dateTimeCreated.toString(),
+                        server.name
+                ),
+                client
+        );
+    }
+
+    public static void sendMotdMessage(IrcClient client) {
+        server.sendMessage(
+                MessageFormat.format(
+                        ":{0} {1} {2} :- {3} Message of the day - \r\n",
+                        server.IRC_HOSTNAME,
+                        Numerics.RPL_MOTDSTART,
+                        client.nickname,
+                        server.name
+                ),
+                client
+        );
+        server.sendMessage(
+                MessageFormat.format(
+                        ":{0} {1} {2} :- {3}\r\n",
+                        server.IRC_HOSTNAME,
+                        Numerics.RPL_MOTD,
+                        client.nickname,
+                        server.motd
+                ),
+                client
+        );
+        server.sendMessage(
+                MessageFormat.format(
+                        ":{0} {1} {2} :End of MOTD command\r\n",
+                        server.IRC_HOSTNAME,
+                        Numerics.RPL_MOTDEND,
+                        client.nickname,
+                        server.motd
+                ),
+                client
+        );
+    }
+
+    public static void sendPongMessage(IrcClient client) {
+        server.sendMessage(
+                MessageFormat.format(
+                        "PONG {0}",
+                        server.IRC_HOSTNAME
                 ),
                 client
         );
@@ -88,7 +131,7 @@ public class Messages {
         String messageType = partsOfMessage.poll();
         if (messageType == null) return;
 
-        switch (messageType) {
+        switch (messageType.toUpperCase()) {
             case "CAP" -> {
                 IrcServer.logger.info("TODO: CAP");
                 break;
@@ -99,12 +142,18 @@ public class Messages {
             }
             case "NICK" -> {
                 client.nickname = partsOfMessage.poll();
-                System.out.println(client.nickname);
                 IrcServer.logger.info(MessageFormat.format("Client {0} sent name '{1}'", client.toString(), client.nickname));
             }
             case "USER" -> {
                 IrcServer.logger.info(MessageFormat.format("Client {0} wants to register", client.toString()));
                 Messages.sendWelcomeMessage(client);
+                Messages.sendMotdMessage(client);
+            }
+            case "MOTD" -> {
+                Messages.sendMotdMessage(client);
+            }
+            case "PING" -> {
+                Messages.sendPongMessage(client);
             }
 
             default -> {
