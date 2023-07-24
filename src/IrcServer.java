@@ -1,14 +1,13 @@
 import java.io.*;
 import java.net.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.logging.*;
 
 
 public class IrcServer {
     ServerSocket server;
     public final String IRC_HOSTNAME = "127.0.0.1";
-    public final String name = "JIRC";
+    public final String name = "IRC";
     public final int IRC_PORT = 6667;
     public final int VERSION = 1;
 
@@ -34,11 +33,12 @@ public class IrcServer {
         dateTimeCreated = LocalDateTime.now();
 
         // TODO: load from file
-        this.motd = "MOTD goes here";
+        this.motd = "hello world";
 
 
         // Create initial channel
-        this.channelManager.addChannel(new IrcChannel("channel", "Anything & everything!"));
+        this.channelManager.addChannel(new IrcChannel("channel", "lorem ipsum dolor"));
+        this.channelManager.addChannel(new IrcChannel("coding", "std::cout"));
     }
 
     void handleClient(IrcClient client) {
@@ -76,7 +76,13 @@ public class IrcServer {
         }
     }
 
-    void sendMessage(String message, IrcClient client) {
+    void broadcastMessage(String message) {
+        for (IrcClient client : clientManager.clients) {
+            sendMessageToClient(message, client);
+        }
+    }
+
+    void sendMessageToClient(String message, IrcClient client) {
         if (!client.socket.isConnected()) return;
 
         try {

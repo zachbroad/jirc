@@ -28,30 +28,47 @@ public class Messages {
         <nick>!<user>@<host>"
      */
     public static void sendWelcomeMessage(IrcClient client) {
-        server.sendMessage(MessageFormat.format(":{0} {1} {2} :Welcome to the Internet Relay Network {2}!{3}@{0}\r\n", server.IRC_HOSTNAME, Numerics.RPL_WELCOME, client.nickname, client.username), client);
+        server.sendMessageToClient(MessageFormat.format(":{0} {1} {2} :Welcome to the Internet Relay Network {2}!{3}@{0}\r\n", server.IRC_HOSTNAME, Numerics.RPL_WELCOME, client.nickname, client.username), client);
 
-        server.sendMessage(MessageFormat.format(":{0} {1} {2} :Your host is {0}, running version {3}\r\n", server.IRC_HOSTNAME, Numerics.RPL_YOURHOST, client.nickname, server.VERSION), client);
+        server.sendMessageToClient(MessageFormat.format(":{0} {1} {2} :Your host is {0}, running version {3}\r\n", server.IRC_HOSTNAME, Numerics.RPL_YOURHOST, client.nickname, server.VERSION), client);
 
-        server.sendMessage(MessageFormat.format(":{0} {1} {2} :This server was created {3}\r\n", server.IRC_HOSTNAME, Numerics.RPL_CREATED, client.nickname, server.dateTimeCreated.toString()), client);
+        server.sendMessageToClient(MessageFormat.format(":{0} {1} {2} :This server was created {3}\r\n", server.IRC_HOSTNAME, Numerics.RPL_CREATED, client.nickname, server.dateTimeCreated.toString()), client);
 
-        server.sendMessage(MessageFormat.format(":{0} {1} {2} :{3} v1 NULL NULL\r\n", // todo
+        server.sendMessageToClient(MessageFormat.format(":{0} {1} {2} :{3} v1 NULL NULL\r\n", // todo
                 server.IRC_HOSTNAME, Numerics.RPL_MYINFO, client.nickname, server.dateTimeCreated.toString(), server.name), client);
     }
 
     public static void sendMotdMessage(IrcClient client) {
-        server.sendMessage(MessageFormat.format(":{0} {1} {2} :- {3} Message of the day - \r\n", server.IRC_HOSTNAME, Numerics.RPL_MOTDSTART, client.nickname, server.name), client);
-        server.sendMessage(MessageFormat.format(":{0} {1} {2} :- {3}\r\n", server.IRC_HOSTNAME, Numerics.RPL_MOTD, client.nickname, server.motd), client);
-        server.sendMessage(MessageFormat.format(":{0} {1} {2} :End of MOTD command\r\n", server.IRC_HOSTNAME, Numerics.RPL_MOTDEND, client.nickname, server.motd), client);
+        server.sendMessageToClient(MessageFormat.format(":{0} {1} {2} :- {3} Message of the day - \r\n",
+                server.IRC_HOSTNAME,
+                Numerics.RPL_MOTDSTART,
+                client.nickname,
+                server.name
+        ), client);
+        server.sendMessageToClient(MessageFormat.format(
+                ":{0} {1} {2} :- {3}\r\n",
+                server.IRC_HOSTNAME,
+                Numerics.RPL_MOTD,
+                client.nickname,
+                server.motd
+        ), client);
+        server.sendMessageToClient(MessageFormat.format(
+                ":{0} {1} {2} :End of MOTD command\r\n",
+                server.IRC_HOSTNAME,
+                Numerics.RPL_MOTDEND,
+                client.nickname,
+                server.motd
+        ), client);
     }
 
     public static void sendPongMessage(IrcClient client) {
-        server.sendMessage(MessageFormat.format("PONG {0}\r\n", server.IRC_HOSTNAME), client);
+        server.sendMessageToClient(MessageFormat.format("PING :{0}\r\n", server.IRC_HOSTNAME), client);
     }
 
     public static void sendListMessage(IrcClient client) {
         for (IrcChannel channel : server.channelManager.channels) {
             System.out.println("h");
-            server.sendMessage(MessageFormat.format(":{0} {1} {2} #{3} {4} :{5}\r\n", server.IRC_HOSTNAME, // 0
+            server.sendMessageToClient(MessageFormat.format(":{0} {1} {2} #{3} {4} :{5}\r\n", server.IRC_HOSTNAME, // 0
                     Numerics.RPL_LIST, // 1
                     client.nickname, // 2
                     channel.name, // 3
@@ -60,7 +77,13 @@ public class Messages {
             ), client);
         }
 
-        server.sendMessage(MessageFormat.format(":{0} {1} {2} :End of LIST\r\n", server.IRC_HOSTNAME, Numerics.RPL_LISTEND, client.nickname), client);
+        server.sendMessageToClient(
+                MessageFormat.format(
+                        ":{0} {1} {2} :End of LIST\r\n",
+                        server.IRC_HOSTNAME,
+                        Numerics.RPL_LISTEND,
+                        client.nickname
+                ), client);
     }
 
 
@@ -87,7 +110,15 @@ public class Messages {
                 server.clientManager.removeClient(client);
             }
             case "NICK" -> {
-                client.nickname = partsOfMessage.poll();
+                String oldName = client.nickname; // store old
+                client.nickname = partsOfMessage.poll(); // set new
+                server.broadcastMessage(MessageFormat.format(
+                        ":{0}@{1} NICK {2}\r\n",
+                        oldName,
+                        server.IRC_HOSTNAME,
+                        client.nickname
+                ));
+
                 IrcServer.logger.info(MessageFormat.format("Client {0} sent name '{1}'", client.toString(), client.nickname));
             }
             case "USER" -> {
@@ -98,13 +129,34 @@ public class Messages {
                 Messages.sendWelcomeMessage(client);
                 Messages.sendMotdMessage(client);
                 client.joinChannel(server.channelManager.channels.get(0));
+                client.joinChannel(server.channelManager.channels.get(1));
             }
             case "MOTD" -> {
                 Messages.sendMotdMessage(client);
             }
             case "OPER" -> {}
             case "SERVICE" -> {}
-            case "QUIT" -> {}
+            case "QUIT" -> {
+                // Get quit message from user
+                String quitMessage = ircMessage.raw.split(":")[1];
+
+                /* broadcast their quit message to server
+                 * 0 - user
+                 * 1 - irc hostname
+                 * 2 - quitMessage
+                 */
+
+                String formattedMessage = MessageFormat.format(
+                        ":{0}@{1} QUIT :{2}\r\n",
+                        client.nickname, // todo: is it nickname or username
+                        server.IRC_HOSTNAME,
+                        quitMessage
+                );
+                server.broadcastMessage(formattedMessage);
+
+                // disconnect the user
+                server.clientManager.removeClient(client);
+            }
             case "SQUIT" -> {
             }
             case "PART" -> {}
@@ -140,7 +192,9 @@ public class Messages {
             case "PING" -> {
                 Messages.sendPongMessage(client);
             }
-            case "PONG" -> {}
+            case "PONG" -> {
+                Messages.sendPongMessage(client); // todo figure this out
+            }
             case "ERROR" -> {}
 
             // 4 Optional features

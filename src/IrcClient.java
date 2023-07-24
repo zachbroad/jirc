@@ -23,7 +23,7 @@ public class IrcClient {
     }
 
     public void sendMessage(String message) {
-        IrcServer.serverInstance.sendMessage(message, this);
+        IrcServer.serverInstance.sendMessageToClient(message, this);
     }
 
     public void joinChannel(IrcChannel channel) {
