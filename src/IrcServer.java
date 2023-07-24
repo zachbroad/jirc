@@ -5,48 +5,6 @@ import java.util.ArrayList;
 import java.util.logging.*;
 
 
-class IrcClient {
-    public String nickname;
-    public String username; // name user registered under
-    public Socket socket;
-    public InetAddress ipAddress;
-    public boolean registered;
-
-    private IrcClientManager clientManager;
-
-    public IrcClient() {
-        clientManager = IrcServer.serverInstance.clientManager;
-    }
-
-    public void remove() {
-        this.clientManager.removeClient(this);
-    }
-
-    public void register(String name) {
-        this.clientManager.registerClientAsUser(this, name);
-    }
-}
-
-class IrcClientManager {
-    ArrayList<IrcClient> clients;
-
-    public IrcClientManager() {
-        clients = new ArrayList<>();
-    }
-
-    void createClient(IrcClient client) {
-        this.clients.add(client);
-    }
-
-    void removeClient(IrcClient client) {
-        this.clients.remove(client);
-    }
-
-    void registerClientAsUser(IrcClient client, String username) {
-        client.registered = true;
-    }
-}
-
 public class IrcServer {
     ServerSocket server;
     public final String IRC_HOSTNAME = "127.0.0.1";
@@ -59,6 +17,7 @@ public class IrcServer {
 
     public static IrcServer serverInstance;
     public IrcClientManager clientManager = new IrcClientManager();
+    public IrcChannelManager channelManager = new IrcChannelManager();
 
     private boolean isRunning = true;
 
@@ -74,8 +33,12 @@ public class IrcServer {
         // TODO: store in config
         dateTimeCreated = LocalDateTime.now();
 
-        // todo load from file
+        // TODO: load from file
         this.motd = "MOTD goes here";
+
+
+        // Create initial channel
+        this.channelManager.addChannel(new IrcChannel("Channel 1 ", "Anything & everything!"));
     }
 
     void handleClient(IrcClient client) {

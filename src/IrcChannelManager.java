@@ -17,5 +17,4 @@ public class IrcChannelManager {
         else
             IrcServer.logger.warning("Attempted to remove channel that doesn't exist.");
     }
-
 }

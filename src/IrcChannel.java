@@ -15,6 +15,22 @@ public class IrcChannel {
         this.topic = topic;
     }
 
+    public void addClient(IrcClient client) {
+        if (!this.clients.contains(client)) {
+            clients.add(client);
+        } else {
+            IrcServer.logger.warning("User tried to join channel they're already in!");
+        }
+    }
+
+    public void removeClient(IrcClient client) {
+        if (this.clients.contains(client)) {
+            clients.remove(client);
+        } else {
+            IrcServer.logger.warning("User tried to leave channel they're not in!");
+        }
+    }
+
 
 
 }

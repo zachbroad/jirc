@@ -17,7 +17,7 @@ public class Numerics {
     static final int RPL_MYINFO = 004;
 
     // List Channels
-    static final int RPL_LISTSTART = 321;
+    static final int RPL_LISTSTART = 321; // obsolete
     static final int RPL_LIST = 322;
     static final int RPL_LISTEND = 323;
 

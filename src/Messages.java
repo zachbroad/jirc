@@ -117,6 +117,35 @@ public class Messages {
         );
     }
 
+    public static void sendListMessage(IrcClient client) {
+        for (IrcChannel channel : server.channelManager.channels) {
+            System.out.println("h");
+            server.sendMessage(
+                    MessageFormat.format(
+                            ":{0} {1} {2} #{3} {4} :{5}\r\n",
+                            server.IRC_HOSTNAME, // 0
+                            Numerics.RPL_LIST, // 1
+                            client.nickname, // 2
+                            channel.name, // 3
+                            channel.clients.size(), // 4
+                            channel.topic // 5
+                    ),
+                    client
+            );
+        }
+
+        server.sendMessage(
+                MessageFormat.format(
+                        ":{0} {1} {2} :End of LIST\r\n",
+                        server.IRC_HOSTNAME,
+                        Numerics.RPL_LISTEND,
+                        client.nickname,
+                        server.motd
+                ),
+                client
+        );
+    }
+
 
     public static void processMessage(IrcMessage ircMessage, IrcClient client) {
         // Process all messages
@@ -154,6 +183,9 @@ public class Messages {
             }
             case "PING" -> {
                 Messages.sendPongMessage(client);
+            }
+            case "LIST" -> {
+                Messages.sendListMessage(client);
             }
 
             default -> {
