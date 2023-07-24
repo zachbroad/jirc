@@ -38,7 +38,7 @@ public class IrcServer {
 
 
         // Create initial channel
-        this.channelManager.addChannel(new IrcChannel("Channel 1 ", "Anything & everything!"));
+        this.channelManager.addChannel(new IrcChannel("channel", "Anything & everything!"));
     }
 
     void handleClient(IrcClient client) {
@@ -132,10 +132,5 @@ public class IrcServer {
             throw new RuntimeException(e);
         }
     }
-
-    void sendMessage() {
-
-    }
-
 
 }

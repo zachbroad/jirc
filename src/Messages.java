@@ -28,122 +28,39 @@ public class Messages {
         <nick>!<user>@<host>"
      */
     public static void sendWelcomeMessage(IrcClient client) {
-        server.sendMessage(
-                MessageFormat.format(
-                        ":{0} {1} {2} :Welcome to the Internet Relay Network {2}!{3}@{0}\r\n",
-                        server.IRC_HOSTNAME,
-                        Numerics.RPL_WELCOME,
-                        client.nickname,
-                        client.username
-                ),
-                client
-        );
+        server.sendMessage(MessageFormat.format(":{0} {1} {2} :Welcome to the Internet Relay Network {2}!{3}@{0}\r\n", server.IRC_HOSTNAME, Numerics.RPL_WELCOME, client.nickname, client.username), client);
 
-        server.sendMessage(
-                MessageFormat.format(
-                        ":{0} {1} {2} :Your host is {0}, running version {3}\r\n",
-                        server.IRC_HOSTNAME,
-                        Numerics.RPL_YOURHOST,
-                        client.nickname,
-                        server.VERSION
-                ),
-                client
-        );
+        server.sendMessage(MessageFormat.format(":{0} {1} {2} :Your host is {0}, running version {3}\r\n", server.IRC_HOSTNAME, Numerics.RPL_YOURHOST, client.nickname, server.VERSION), client);
 
-        server.sendMessage(
-                MessageFormat.format(
-                        ":{0} {1} {2} :This server was created {3}\r\n",
-                        server.IRC_HOSTNAME,
-                        Numerics.RPL_CREATED,
-                        client.nickname,
-                        server.dateTimeCreated.toString()
-                ),
-                client
-        );
+        server.sendMessage(MessageFormat.format(":{0} {1} {2} :This server was created {3}\r\n", server.IRC_HOSTNAME, Numerics.RPL_CREATED, client.nickname, server.dateTimeCreated.toString()), client);
 
-        server.sendMessage(
-                MessageFormat.format(
-                        ":{0} {1} {2} :{3} v1 NULL NULL\r\n", // todo
-                        server.IRC_HOSTNAME,
-                        Numerics.RPL_MYINFO,
-                        client.nickname,
-                        server.dateTimeCreated.toString(),
-                        server.name
-                ),
-                client
-        );
+        server.sendMessage(MessageFormat.format(":{0} {1} {2} :{3} v1 NULL NULL\r\n", // todo
+                server.IRC_HOSTNAME, Numerics.RPL_MYINFO, client.nickname, server.dateTimeCreated.toString(), server.name), client);
     }
 
     public static void sendMotdMessage(IrcClient client) {
-        server.sendMessage(
-                MessageFormat.format(
-                        ":{0} {1} {2} :- {3} Message of the day - \r\n",
-                        server.IRC_HOSTNAME,
-                        Numerics.RPL_MOTDSTART,
-                        client.nickname,
-                        server.name
-                ),
-                client
-        );
-        server.sendMessage(
-                MessageFormat.format(
-                        ":{0} {1} {2} :- {3}\r\n",
-                        server.IRC_HOSTNAME,
-                        Numerics.RPL_MOTD,
-                        client.nickname,
-                        server.motd
-                ),
-                client
-        );
-        server.sendMessage(
-                MessageFormat.format(
-                        ":{0} {1} {2} :End of MOTD command\r\n",
-                        server.IRC_HOSTNAME,
-                        Numerics.RPL_MOTDEND,
-                        client.nickname,
-                        server.motd
-                ),
-                client
-        );
+        server.sendMessage(MessageFormat.format(":{0} {1} {2} :- {3} Message of the day - \r\n", server.IRC_HOSTNAME, Numerics.RPL_MOTDSTART, client.nickname, server.name), client);
+        server.sendMessage(MessageFormat.format(":{0} {1} {2} :- {3}\r\n", server.IRC_HOSTNAME, Numerics.RPL_MOTD, client.nickname, server.motd), client);
+        server.sendMessage(MessageFormat.format(":{0} {1} {2} :End of MOTD command\r\n", server.IRC_HOSTNAME, Numerics.RPL_MOTDEND, client.nickname, server.motd), client);
     }
 
     public static void sendPongMessage(IrcClient client) {
-        server.sendMessage(
-                MessageFormat.format(
-                        "PONG {0}",
-                        server.IRC_HOSTNAME
-                ),
-                client
-        );
+        server.sendMessage(MessageFormat.format("PONG {0}\r\n", server.IRC_HOSTNAME), client);
     }
 
     public static void sendListMessage(IrcClient client) {
         for (IrcChannel channel : server.channelManager.channels) {
             System.out.println("h");
-            server.sendMessage(
-                    MessageFormat.format(
-                            ":{0} {1} {2} #{3} {4} :{5}\r\n",
-                            server.IRC_HOSTNAME, // 0
-                            Numerics.RPL_LIST, // 1
-                            client.nickname, // 2
-                            channel.name, // 3
-                            channel.clients.size(), // 4
-                            channel.topic // 5
-                    ),
-                    client
-            );
+            server.sendMessage(MessageFormat.format(":{0} {1} {2} #{3} {4} :{5}\r\n", server.IRC_HOSTNAME, // 0
+                    Numerics.RPL_LIST, // 1
+                    client.nickname, // 2
+                    channel.name, // 3
+                    channel.clients.size(), // 4
+                    channel.topic // 5
+            ), client);
         }
 
-        server.sendMessage(
-                MessageFormat.format(
-                        ":{0} {1} {2} :End of LIST\r\n",
-                        server.IRC_HOSTNAME,
-                        Numerics.RPL_LISTEND,
-                        client.nickname,
-                        server.motd
-                ),
-                client
-        );
+        server.sendMessage(MessageFormat.format(":{0} {1} {2} :End of LIST\r\n", server.IRC_HOSTNAME, Numerics.RPL_LISTEND, client.nickname), client);
     }
 
 
@@ -175,37 +92,66 @@ public class Messages {
             }
             case "USER" -> {
                 IrcServer.logger.info(MessageFormat.format("Client {0} wants to register", client.toString()));
+                String realName = ircMessage.raw.split(":")[1];
+                IrcServer.logger.info(MessageFormat.format("Got real name {0}", realName));
+                client.username = realName;
                 Messages.sendWelcomeMessage(client);
                 Messages.sendMotdMessage(client);
+                client.joinChannel(server.channelManager.channels.get(0));
             }
             case "MOTD" -> {
                 Messages.sendMotdMessage(client);
             }
-            case "PING" -> {
-                Messages.sendPongMessage(client);
+            case "OPER" -> {}
+            case "SERVICE" -> {}
+            case "QUIT" -> {}
+            case "SQUIT" -> {
             }
+            case "PART" -> {}
+            case "MODE" -> {}
+            case "TOPIC" -> {}
+            case "NAMES" -> {}
             case "LIST" -> {
                 Messages.sendListMessage(client);
             }
+            case "INVITE" -> {}
+            case "KICK" -> {}
+            case "PRIVMSG" -> {}
+            case "NOTICE" -> {}
+            case "LUSERS" -> {}
+            case "VERSION" -> {}
+            case "STATS" -> {}
+            case "LINKS" -> {}
+            case "TIME" -> {}
+            case "CONNECT" -> {}
+            case "TRACE" -> {}
+            case "ADMIN" -> {}
+            case "INFO" -> {}
+            case "SERVLIST" -> {}
+            case "SQUERY" -> {}
+
+            // 3.6 User based queries
+            case "WHO" -> {}
+            case "WHOIS" -> {}
+            case "WHOWAS" -> {}
+
+            // 3.7 Misc. messages
+            case "KILL" -> {}
+            case "PING" -> {
+                Messages.sendPongMessage(client);
+            }
+            case "PONG" -> {}
+            case "ERROR" -> {}
+
+            // 4 Optional features
+            case "AWAY" -> {}
+            case "REHASH" -> {}
 
             default -> {
             }
         }
 
         // TODO
-//        switch (ircMessage.type) {
-//            case CAP -> {
-//
-//            }
-//            case INFO -> {
-//
-//            }
-//            case NICK -> {
-//            }
-//            case USER -> {
-//
-//            }
-//        }
     }
 
 
