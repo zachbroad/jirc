@@ -4,6 +4,7 @@ public class IrcChannel {
     public String name;
     public String topic;
     public ArrayList<IrcClient> clients = new ArrayList<>();
+    public int maxCapacity;
 
     public IrcChannel() {}
 
@@ -18,7 +19,7 @@ public class IrcChannel {
      * @param client to add
      */
     public void addClient(IrcClient client) {
-        if (!this.clients.contains(client)) {
+        if (!this.clients.contains(client) && currentCapacity() < maxCapacity) {
             clients.add(client);
         } else {
             IrcServer.logger.warning("User tried to join channel they're already in!");
@@ -36,5 +37,14 @@ public class IrcChannel {
         } else {
             IrcServer.logger.warning("User tried to leave channel they're not in!");
         }
+    }
+
+    /**
+     * Returns number of connected clients
+     *
+     * @return how many clients are currently connected to the channel
+     */
+    public int currentCapacity() {
+        return this.clients.size();
     }
 }

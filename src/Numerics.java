@@ -18,7 +18,7 @@ public class Numerics {
 
     // Topics
     static final int RPL_NOTOPIC = 331;
-    static final int RPL_TOPIC = 332;
+    static final int RPL_TOPIC = 332; // on channel join
     static final int RPL_TOPICWHOTIME = 333;
 
     // Info

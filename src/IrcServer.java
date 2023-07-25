@@ -11,6 +11,7 @@ public class IrcServer {
     public final String name = "IRC";
     public final int IRC_PORT = 6667;
     public final int VERSION = 1;
+    public final String password = "letmein";
     public LocalDateTime dateTimeCreated;
     public String motd;
     public IrcClientManager clientManager = new IrcClientManager();
@@ -32,8 +33,9 @@ public class IrcServer {
 
 
         // Create initial channel
-        this.channelManager.addChannel(new IrcChannel("#channel", "lorem ipsum dolor"));
-        this.channelManager.addChannel(new IrcChannel("#coding", "std::cout"));
+        this.channelManager.addChannel(new IrcChannel("#general", "lorem ipsum dolor"));
+        this.channelManager.addChannel(new IrcChannel("#test", "test channel 123"));
+        this.channelManager.addChannel(new IrcChannel("#channel", "another channel"));
     }
 
     /**
@@ -95,8 +97,13 @@ public class IrcServer {
      * @param client  to send to
      */
     void sendMessageToClient(String message, IrcClient client) {
+        if (message.length() > 512) {
+            IrcServer.logger.warning("Message from %s >512 characters!".formatted(client.identifier()));
+            return;
+        }
+
         if (!client.socket.isConnected()) {
-            IrcServer.logger.warning("Client %s socket not connected.".formatted(client.username));
+            IrcServer.logger.warning("Client %s socket not connected.".formatted(client.identifier()));
         };
 
         try {

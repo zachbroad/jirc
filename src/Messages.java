@@ -106,8 +106,8 @@ public class Messages {
      *
      * @param client recipient of message
      */
-    public static void sendPongMessage(IrcClient client) { // TODO: FIX ?
-        server.sendMessageToClient(MessageFormat.format("PING :{0}\r\n", server.IRC_HOSTNAME), client);
+    public static void sendPongMessage(IrcClient client, String identifier) { // TODO: FIX ?
+        server.sendMessageToClient(MessageFormat.format("PING :{0}\r\n", identifier), client);
     }
 
     /**
@@ -210,9 +210,8 @@ public class Messages {
                  * 2 - quitMessage
                  */
                 String formattedMessage = MessageFormat.format(
-                        ":{0}@{1} QUIT :{2}\r\n",
-                        client.nickname, // todo: is it nickname or username
-                        server.IRC_HOSTNAME,
+                        ":{0} QUIT :{1}\r\n",
+                        client.identifier(), // todo: is it nickname or username
                         quitMessage
                 );
                 server.broadcastMessage(formattedMessage);
@@ -301,7 +300,8 @@ public class Messages {
             case "KILL" -> {
             }
             case "PING" -> {
-                Messages.sendPongMessage(client);
+                String after = ircMessage.afterMessageType();
+                Messages.sendPongMessage(client, after);
             }
             case "PONG" -> {
 //                Messages.sendPongMessage(client); // todo figure this out

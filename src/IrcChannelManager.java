@@ -37,7 +37,7 @@ public class IrcChannelManager {
      */
     public IrcChannel getChannelByName(String channelName) {
         for (var c : channels) {
-            if (c.name.equals(channelName)) {
+            if (c.name.equalsIgnoreCase(channelName)) {
                 return c;
             }
         }
