@@ -107,7 +107,7 @@ public class Messages {
      * @param client recipient of message
      */
     public static void sendPongMessage(IrcClient client, String identifier) { // TODO: FIX ?
-        server.sendMessageToClient(MessageFormat.format("PING :{0}\r\n", identifier), client);
+        server.sendMessageToClient(MessageFormat.format("PING {0}\r\n", identifier), client);
     }
 
     /**
