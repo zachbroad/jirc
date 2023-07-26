@@ -9,6 +9,7 @@ public class IrcClient {
     public String nickname;
     public String username; // name user registered under
     public String realname; // name user registered under
+    public String awayMessage;
     public Socket socket;
     public InetAddress ipAddress;
     public boolean registered;
@@ -89,31 +90,14 @@ public class IrcClient {
         this.sendMessage(joinMsgPost);
 
 
+
         // Send RPL_TOPIC if we have it, otherwise RPL_NOTOPIC
         if (channel.topic != null) {
-            // :server 332 <nick> <channel> :current_topic
-            String topicMsgPre = ":{0} {1} {2} {3} :{4}\r\n";
-            String topicMsgPost = MessageFormat.format(
-                    topicMsgPre,
-                    server.IRC_HOSTNAME,
-                    Numerics.RPL_TOPIC,
-                    this.nickname,
-                    channel.name,
-                    channel.topic
-            );
-            this.sendMessage(topicMsgPost);
+            Responses.sendTopicMessage(this, channel);
         } else {
-            // :server 331 <nick> <channel> :No topic is set
-            String topicMsgPre = ":{0} {1} {2} {3} :No topic is set\r\n";
-            String topicMsgPost = MessageFormat.format(
-                    topicMsgPre,
-                    server.IRC_HOSTNAME,
-                    Numerics.RPL_TOPIC,
-                    this.nickname,
-                    channel.name
-            );
-            this.sendMessage(topicMsgPost);
+            Responses.sendNoTopicMessage(this, channel);
         }
+
         return true;
     }
 

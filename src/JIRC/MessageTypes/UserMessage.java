@@ -20,40 +20,10 @@ public class UserMessage extends BaseMessage {
      * @param client recipient of message
      */
     private static void sendWelcomeMessage(IrcClient client) {
-        IrcServer.instance.sendMessageToClient(MessageFormat.format(
-                        ":{0} {1} {2} :Welcome to the Internet Relay Network {2}!{3}@{0}\r\n",
-                        IrcServer.instance.IRC_HOSTNAME, // 0
-                        Numerics.RPL_YOURHOST, // 1
-                        client.nickname,
-                        client.username
-                ), client
-        );
-
-        IrcServer.instance.sendMessageToClient(MessageFormat.format(
-                ":{0} {1} {2} :Your host is {0}, running version {3}\r\n",
-                IrcServer.instance.IRC_HOSTNAME, // 0
-                Numerics.RPL_YOURHOST, // 1
-                client.nickname, // 2
-                IrcServer.instance.VERSION // 3
-        ), client);
-
-        IrcServer.instance.sendMessageToClient(MessageFormat.format(
-                ":{0} {1} {2} :This server was created {3}\r\n",
-                IrcServer.instance.IRC_HOSTNAME, // 0
-                Numerics.RPL_CREATED, // 1
-                client.nickname, // 2
-                IrcServer.instance.dateTimeCreated.toString() // 3
-        ), client);
-
-        // TODO fix NULL
-        IrcServer.instance.sendMessageToClient(MessageFormat.format(
-                ":{0} {1} {2} :{3} v1 NULL NULL\r\n",
-                IrcServer.instance.IRC_HOSTNAME, // 0
-                Numerics.RPL_MYINFO, // 1
-                client.nickname, // 2
-                IrcServer.instance.dateTimeCreated.toString(), // 3
-                IrcServer.instance.name // 4
-        ), client);
+        Responses.sendWelcomeMessage(client);
+        Responses.sendVersionMessage(client);
+        Responses.sendCreatedMessage(client);
+        Responses.sendMyInfoMessage(client);
     }
 
     @Override

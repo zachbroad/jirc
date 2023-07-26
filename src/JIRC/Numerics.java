@@ -13,6 +13,9 @@ public class Numerics {
     public static final int RPL_CREATED = 003;
     public static final int RPL_MYINFO = 004;
 
+    // AWAY
+    public static final int RPL_AWAY = 301; // "<nick> :<away message>"
+
     // List Channels
     public static final int RPL_LISTSTART = 321; // obsolete
     public static final int RPL_LIST = 322;
@@ -41,6 +44,7 @@ public class Numerics {
     public static final int ERR_UNKNOWNERROR = 400;
     public static final int ERR_NOSUCHNICK = 401;
     public static final int ERR_NOSUCHSERVER = 402;
-    public static final int ERR_NOSUCHCHANNEL = 403;
+    public static final int ERR_NOSUCHCHANNEL = 403; // <channel name> :No such channel
     public static final int ERR_CANNOTSENDTOCHAN = 404;
+    public static final int ERR_NOTONCHANNEL = 442; // <channel> :You're not on that channel
 }

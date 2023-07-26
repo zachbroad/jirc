@@ -5,7 +5,6 @@ import JIRC.MessageTypes.*;
 import java.text.MessageFormat;
 
 
-
 /*
     Most of the messages sent to the server generate a reply of some
     sort.  The most common reply is the numeric reply, used for both
@@ -21,22 +20,6 @@ import java.text.MessageFormat;
 
 public class Messages {
     private static IrcServer server = IrcServer.instance;
-
-
-    /*
-     */
-
-
-    /**
-     * Send PING to client
-     *
-     * @param client recipient of message
-     */
-    public static void sendPongMessage(IrcClient client, String identifier) { // TODO: FIX ?
-        server.sendMessageToClient(MessageFormat.format(":{0} PING {1}\r\n", server.getPrefix(), identifier), client);
-        server.sendMessageToClient(MessageFormat.format(":{0} PONG {1}\r\n", server.getPrefix(), identifier), client);
-    }
-
 
     /**
      * Parse message & handle it
@@ -84,7 +67,9 @@ public class Messages {
                 new PartMessage(ircMessage, client).handle();
             }
             case "MODE" -> {}
-            case "TOPIC" -> {}
+            case "TOPIC" -> {
+                new TopicMessage(ircMessage, client).handle();
+            }
             case "NAMES" -> {}
             case "LIST" -> {
                 new ListMessage(ircMessage, client).handle();

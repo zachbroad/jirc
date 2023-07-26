@@ -20,7 +20,7 @@ public class PingMessage extends BaseMessage {
     public void handle() {
         IrcServer.logger.info("Sending PING message %s".formatted(getIdentifier()));
 
-        server.sendMessageToClient(MessageFormat.format(":{0} PING {1}\r\n", server.getPrefix(), getIdentifier()), client);
-        server.sendMessageToClient(MessageFormat.format(":{0} PONG {1}\r\n", server.getPrefix(), getIdentifier()), client);
+        server.sendMessageToClient(MessageFormat.format(":{0} PING {1}\r\n", server.IRC_HOSTNAME, getIdentifier()), client);
+        server.sendMessageToClient(MessageFormat.format(":{0} PONG {1}\r\n", server.IRC_HOSTNAME, getIdentifier()), client);
     }
 }

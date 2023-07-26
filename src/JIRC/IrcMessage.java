@@ -62,8 +62,16 @@ public class IrcMessage {
         return partsOfMessage;
     }
 
-    String getMessageType() {
+    public String getMessageType() {
         return raw.split(" ")[0];
+    }
+
+    public String getFirstWord() {
+        return raw.split(" ")[1];
+    }
+
+    public String getTrailer() {
+        return raw.split(":")[1];
     }
 
 
