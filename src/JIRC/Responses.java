@@ -130,9 +130,9 @@ public class Responses {
         String topicMsgPre = ":{0} {1} {2} {3} :{4}\r\n";
         String topicMsgPost = MessageFormat.format(
                 topicMsgPre,
-                server.IRC_HOSTNAME,
+                IrcServer.instance.IRC_HOSTNAME,
                 Numerics.RPL_TOPIC,
-                this.nickname,
+                client.nickname,
                 channel.name,
                 channel.topic
         );
@@ -167,6 +167,15 @@ public class Responses {
                 client.nickname, // 2
                 IrcServer.instance.motd // 3
         ));
+    }
+
+    /****************************************************************************
+     ***************************** ERRORS ***************************************
+     ****************************************************************************/
+    public static void errorNoSuchMessage(IrcClient client, String channelName) {
+        String preFormat = ":{0} {1} {2} :No such channel\r\n";
+        String postFormat = MessageFormat.format(preFormat, IrcServer.instance.IRC_HOSTNAME, Numerics.ERR_NOSUCHCHANNEL, channelName);
+        client.sendMessage(postFormat);
     }
 
 

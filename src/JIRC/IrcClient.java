@@ -120,9 +120,7 @@ public class IrcClient {
         IrcChannel channelToJoin = server.channelManager.getChannelByName(channelName);
 
         if (channelToJoin == null) {
-            String preFormat = ":{0} {1}\r\n";
-            String postFormat = MessageFormat.format(preFormat, server.IRC_HOSTNAME, Numerics.ERR_NOSUCHCHANNEL);
-            this.sendMessage(postFormat);
+            Responses.errorNoSuchMessage(this, channelName);
             return false;
         }
 
