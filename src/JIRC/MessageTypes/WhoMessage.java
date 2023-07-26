@@ -38,7 +38,7 @@ public class WhoMessage extends BaseMessage {
                             client.username, // 2
                             channelObj.name, // 3
                             c.username, //4
-                            c.ipAddress.getHostAddress(), //5
+                            c.ipAddress, //5
                             c.nickname,// 6
                             c.username
                     )

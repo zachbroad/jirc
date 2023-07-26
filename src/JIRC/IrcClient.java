@@ -11,7 +11,7 @@ public class IrcClient {
     public String realname; // name user registered under
     public String awayMessage;
     public Socket socket;
-    public InetAddress ipAddress;
+    public String ipAddress;
     public boolean registered;
     public boolean visible;
     private IrcClientManager clientManager;
@@ -23,7 +23,7 @@ public class IrcClient {
 
     @Override
     public String toString() {
-        return "[JIRC.IrcClient %s@%s]".formatted(nickname, socket.getRemoteSocketAddress().toString());
+        return "[JIRC.IrcClient %s@%s]".formatted(nickname, socket.getInetAddress().getHostAddress());
     }
 
     /**
@@ -32,7 +32,7 @@ public class IrcClient {
      * @return NICKNAME!USERNAME@IPADDRESS
      */
     public String getPrefix() {
-        return "%s!%s@%s".formatted(nickname, username, socket.getRemoteSocketAddress());
+        return "%s!%s@%s".formatted(nickname, username, socket.getInetAddress().getHostAddress());
     }
 
     /**

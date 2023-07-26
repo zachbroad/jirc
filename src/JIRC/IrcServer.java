@@ -3,6 +3,8 @@ package JIRC;
 import java.io.*;
 import java.net.*;
 import java.time.LocalDateTime;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.logging.*;
 
 
@@ -51,6 +53,7 @@ public class IrcServer {
      */
     void handleClient(IrcClient client) {
         if (!client.socket.isConnected()) return;
+//        logger.info("Handle client " + client.toString());
 
         byte[] buffer = new byte[1024];
         int bytesRead = 0;
@@ -137,38 +140,43 @@ public class IrcServer {
     void startServer() {
         try {
             server = new ServerSocket(IRC_PORT);
-            DataInputStream in = null;
 
-//            Thread t = new Thread(() -> {
-//                while (this.isRunning) {
-            try {
+            // Create a fixed-size thread pool to handle clients concurrently
+            int numThreads = 10; // You can adjust this based on your requirements
+            ExecutorService executor = Executors.newFixedThreadPool(numThreads);
+
+            while (isRunning) {
                 System.out.println("Accepting new clients");
-                Socket clientSocket = null;
-                clientSocket = server.accept();
+                Socket clientSocket = server.accept();
                 if (clientSocket.isConnected()) {
                     IrcClient client = new IrcClient();
                     client.nickname = "";
                     client.socket = clientSocket;
-                    client.ipAddress = clientSocket.getInetAddress();
-                    System.out.println("Client connected " + client.ipAddress);
-                    clientManager.createClient(client);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-//                }
-//            });
-//            t.start();
+                    client.ipAddress = clientSocket.getInetAddress().getHostAddress();
+                    System.out.println("Client connected " + client.socket.getInetAddress().getHostAddress());
+                    clientManager.clients.add(client);
 
-
-            while (this.isRunning) {
-                for (IrcClient client : clientManager.clients) {
-                    handleClient(client);
+                    // Submit the client handling task to the executor
+                    executor.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            while (clientManager.clients.contains(client)) {
+                                handleClient(client);
+                            }
+                        }
+                    });
+                } else {
+                    logger.warning("Client %s not connected?!".formatted(clientSocket.toString()));
                 }
             }
+
+            // Shutdown the executor when the server is stopped
+            executor.shutdown();
 
         } catch (IOException e) {
             throw new RuntimeException(e);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
         }
     }
 
