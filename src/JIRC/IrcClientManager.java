@@ -1,3 +1,5 @@
+package JIRC;
+
 import java.util.ArrayList;
 
 public class IrcClientManager {
@@ -8,7 +10,7 @@ public class IrcClientManager {
     }
 
     /**
-     * Add a client to IrcClientManager
+     * Add a client to JIRC.IrcClientManager
      *
      * @param client to add
      */
@@ -17,11 +19,11 @@ public class IrcClientManager {
     }
 
     /**
-     * Remove a client from IrcClientManager
+     * Remove a client from JIRC.IrcClientManager
      *
      * @param client to remove
      */
-    void removeClient(IrcClient client) {
+    public void removeClient(IrcClient client) {
         this.clients.remove(client);
     }
 

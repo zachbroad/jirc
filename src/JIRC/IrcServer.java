@@ -1,3 +1,5 @@
+package JIRC;
+
 import java.io.*;
 import java.net.*;
 import java.time.LocalDateTime;
@@ -6,7 +8,7 @@ import java.util.logging.*;
 
 public class IrcServer {
     public static final Logger logger = Logger.getLogger(IrcServer.class.getName());
-    public static IrcServer serverInstance;
+    public static IrcServer instance;
     public final String IRC_HOSTNAME = "127.0.0.1";
     public final String name = "IRC";
     public final int IRC_PORT = 6667;
@@ -20,7 +22,7 @@ public class IrcServer {
     private boolean isRunning = true;
 
     public IrcServer() {
-        IrcServer.serverInstance = this;
+        IrcServer.instance = this;
 
         // TODO -v verbosity arg
         logger.setLevel(Level.ALL);
@@ -36,6 +38,10 @@ public class IrcServer {
         this.channelManager.addChannel(new IrcChannel("#general", "lorem ipsum dolor"));
         this.channelManager.addChannel(new IrcChannel("#test", "test channel 123"));
         this.channelManager.addChannel(new IrcChannel("#channel", "another channel"));
+    }
+
+    public String getPrefix() {
+        return "%s@%s".formatted(name, IRC_HOSTNAME);
     }
 
     /**
@@ -67,7 +73,7 @@ public class IrcServer {
 
             String[] messages = recv.split("\r\n");
 
-//            IrcServer.logger.info("Got %d messages".formatted(messages.length));
+//            JIRC.IrcServer.logger.info("Got %d messages".formatted(messages.length));
 
 
             for (String message : messages) {
@@ -84,9 +90,17 @@ public class IrcServer {
      *
      * @param message to send
      */
-    void broadcastMessage(String message) {
+    public void broadcastMessage(String message) {
         for (IrcClient client : clientManager.clients) {
             sendMessageToClient(message, client);
+        }
+    }
+
+    public void broadcastMessageFromClient(String message, IrcClient ignore) {
+        for (IrcClient client : clientManager.clients) {
+            if (client != ignore) {
+                sendMessageToClient(message, client);
+            }
         }
     }
 
@@ -96,15 +110,16 @@ public class IrcServer {
      * @param message raw message to send
      * @param client  to send to
      */
-    void sendMessageToClient(String message, IrcClient client) {
+    public void sendMessageToClient(String message, IrcClient client) {
         if (message.length() > 512) {
-            IrcServer.logger.warning("Message from %s >512 characters!".formatted(client.identifier()));
+            IrcServer.logger.warning("Message from %s >512 characters!".formatted(client.getPrefix()));
             return;
         }
 
         if (!client.socket.isConnected()) {
-            IrcServer.logger.warning("Client %s socket not connected.".formatted(client.identifier()));
-        };
+            IrcServer.logger.warning("Client %s socket not connected.".formatted(client.getPrefix()));
+        }
+        ;
 
         try {
             BufferedOutputStream outputStream = new BufferedOutputStream(client.socket.getOutputStream());
@@ -125,7 +140,7 @@ public class IrcServer {
             server = new ServerSocket(IRC_PORT);
             DataInputStream in = null;
 
-//            new Thread(() -> {
+//            Thread t = new Thread(() -> {
 //                while (this.isRunning) {
             try {
                 System.out.println("Accepting new clients");
@@ -143,7 +158,8 @@ public class IrcServer {
                 e.printStackTrace();
             }
 //                }
-//            }).start();
+//            });
+//            t.start();
 
 
             while (this.isRunning) {

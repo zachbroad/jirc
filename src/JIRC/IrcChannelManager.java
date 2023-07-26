@@ -1,7 +1,9 @@
+package JIRC;
+
 import java.util.ArrayList;
 
 public class IrcChannelManager {
-    ArrayList<IrcChannel> channels = new ArrayList<>();
+    public ArrayList<IrcChannel> channels = new ArrayList<>();
 
     public IrcChannelManager() {
     }
@@ -9,7 +11,7 @@ public class IrcChannelManager {
     /**
      * Adds channel to server's channel list
      *
-     * @param channel the IrcChannel object we want to add to channel list
+     * @param channel the JIRC.IrcChannel object we want to add to channel list
      */
     public void addChannel(IrcChannel channel) {
         this.channels.add(channel);
@@ -19,7 +21,7 @@ public class IrcChannelManager {
     /**
      * Deletes channel from server's channel list
      *
-     * @param channel the IrcChannel object we want to remove
+     * @param channel the JIRC.IrcChannel object we want to remove
      */
     public void removeChannel(IrcChannel channel) {
         if (this.channels.contains(channel))

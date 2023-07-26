@@ -1,3 +1,5 @@
+package JIRC;
+
 import java.util.ArrayList;
 
 public class IrcChannel {
@@ -19,11 +21,11 @@ public class IrcChannel {
      * @param client to add
      */
     public void addClient(IrcClient client) {
-        if (!this.clients.contains(client) && currentCapacity() < maxCapacity) {
-            clients.add(client);
-        } else {
-            IrcServer.logger.warning("User tried to join channel they're already in!");
-        }
+        clients.add(client);
+//        if (!this.clients.contains(client) && currentCapacity() < maxCapacity) {
+//        } else {
+//            JIRC.IrcServer.logger.warning("User tried to join channel [%s] they're already in!".formatted(this.name));
+//        }
     }
 
     /**
