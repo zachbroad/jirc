@@ -15,6 +15,22 @@ public class IrcChannel {
         this.topic = topic;
     }
 
+    @Override
+    public String toString() {
+        return "%s - %s".formatted(this.name, this.topic);
+    }
+
+    /**
+     * Sends raw message to all clients connected to channel
+     *
+     * @param message raw message to send
+     */
+    public void sendMessageToClients(String message) {
+        for (IrcClient client : this.clients) {
+            client.sendMessage(message);
+        }
+    }
+
     /**
      * Add client to channel
      *

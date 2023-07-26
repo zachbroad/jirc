@@ -34,8 +34,5 @@ public class JoinMessage extends BaseMessage {
         for (String channelName : channelsStr) {
             client.attemptJoinChannelByName(channelName);
         }
-
     }
-
-
 }

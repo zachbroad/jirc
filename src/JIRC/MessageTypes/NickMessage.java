@@ -15,17 +15,23 @@ public class NickMessage extends BaseMessage {
     @Override
     public void handle() {
         String oldName = client.nickname; // store old
-        client.nickname = message.partsOfMessage().poll(); // set new
-
-        IrcServer.instance.broadcastMessage(MessageFormat.format(
-//                        ":{0}@{1} NICK {2}\r\n",
-                ":{0} NICK {2}\r\n",
-                oldName,
-                IrcServer.instance.IRC_HOSTNAME,
-                client.nickname
-        ));
+        client.nickname = message.afterMessageType(); // set new
+        if (oldName != null) {
+            IrcServer.instance.broadcastMessage(MessageFormat.format(
+                    ":{0} NICK {2}\r\n",
+                    oldName,
+                    IrcServer.instance.IRC_HOSTNAME,
+                    client.nickname
+            ));
+        } else {
+            IrcServer.instance.broadcastMessage(MessageFormat.format(
+                    ":{0} NICK {2}\r\n",
+                    oldName,
+                    IrcServer.instance.IRC_HOSTNAME,
+                    client.nickname
+            ));
+        }
 
         IrcServer.logger.info("Client %s sent name %s".formatted(client.toString(), client.nickname));
-
     }
 }

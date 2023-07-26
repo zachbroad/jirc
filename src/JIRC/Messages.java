@@ -54,7 +54,6 @@ public class Messages {
         switch (ircMessage.getMessageType().toUpperCase()) {
             case "CAP" -> {
                 IrcServer.logger.info("TODO: CAP");
-                break;
             }
             case "EXIT" -> {
                 new ExitMessage(ircMessage, client).handle();
@@ -79,6 +78,7 @@ public class Messages {
             case "SQUIT" -> {
             }
             case "JOIN" -> {
+                new JoinMessage(ircMessage, client).handle();
             }
             case "PART" -> {
                 new PartMessage(ircMessage, client).handle();

@@ -22,7 +22,7 @@ public class IrcClient {
 
     @Override
     public String toString() {
-        return "[JIRC.IrcClient %s@%s]".formatted(this.nickname, this.socket.getRemoteSocketAddress().toString());
+        return "[JIRC.IrcClient %s@%s]".formatted(nickname, socket.getRemoteSocketAddress().toString());
     }
 
     /**
@@ -31,7 +31,7 @@ public class IrcClient {
      * @return NICKNAME!USERNAME@IPADDRESS
      */
     public String getPrefix() {
-        return "%s!%s@%s".formatted(nickname, username, ipAddress.getHostAddress());
+        return "%s!%s@%s".formatted(nickname, username, socket.getRemoteSocketAddress());
     }
 
     /**
@@ -88,9 +88,32 @@ public class IrcClient {
         String joinMsgPost = MessageFormat.format(joinMsgPre, this.getPrefix(), channel.name);
         this.sendMessage(joinMsgPost);
 
-        String topicMsgPre = ":{0} {1} :{2}\r\n";
-        String topicMsgPost = MessageFormat.format(topicMsgPre, server.IRC_HOSTNAME, Numerics.RPL_TOPIC, channel.topic);
-        this.sendMessage(topicMsgPost);
+
+        // Send RPL_TOPIC if we have it, otherwise RPL_NOTOPIC
+        if (channel.topic != null) {
+            // :server 332 <nick> <channel> :current_topic
+            String topicMsgPre = ":{0} {1} {2} {3} :{4}\r\n";
+            String topicMsgPost = MessageFormat.format(
+                    topicMsgPre,
+                    server.IRC_HOSTNAME,
+                    Numerics.RPL_TOPIC,
+                    this.nickname,
+                    channel.name,
+                    channel.topic
+            );
+            this.sendMessage(topicMsgPost);
+        } else {
+            // :server 331 <nick> <channel> :No topic is set
+            String topicMsgPre = ":{0} {1} {2} {3} :No topic is set\r\n";
+            String topicMsgPost = MessageFormat.format(
+                    topicMsgPre,
+                    server.IRC_HOSTNAME,
+                    Numerics.RPL_TOPIC,
+                    this.nickname,
+                    channel.name
+            );
+            this.sendMessage(topicMsgPost);
+        }
         return true;
     }
 
@@ -111,6 +134,7 @@ public class IrcClient {
      */
     public boolean attemptJoinChannelByName(String channelName) {
         IrcChannel channelToJoin = server.channelManager.getChannelByName(channelName);
+
         if (channelToJoin == null) {
             String preFormat = ":{0} {1}\r\n";
             String postFormat = MessageFormat.format(preFormat, server.IRC_HOSTNAME, Numerics.ERR_NOSUCHCHANNEL);

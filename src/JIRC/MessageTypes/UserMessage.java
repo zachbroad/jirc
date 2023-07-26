@@ -38,7 +38,7 @@ public class UserMessage extends BaseMessage {
         ), client);
 
         IrcServer.instance.sendMessageToClient(MessageFormat.format(
-                ":{0} {1} {2} :This IrcServer.instance was created {3}\r\n",
+                ":{0} {1} {2} :This server was created {3}\r\n",
                 IrcServer.instance.IRC_HOSTNAME, // 0
                 Numerics.RPL_CREATED, // 1
                 client.nickname, // 2

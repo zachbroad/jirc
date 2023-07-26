@@ -12,11 +12,20 @@ public class PartMessage extends BaseMessage {
         super(message, client);
     }
 
+
+    String getChannel() {
+        return message.raw.split(" ")[1];
+    }
+
+    String getLeaveMessage() {
+        return message.raw.split(":")[1];
+    }
+
+
     @Override
     public void handle() {
-        // Remove user from channel
-        String channelStr = message.afterMessageType().split(" ")[0];
-        IrcChannel channel = IrcServer.instance.channelManager.getChannelByName(channelStr);
+        // Get channel obj from name
+        IrcChannel channel = IrcServer.instance.channelManager.getChannelByName(getChannel());
 
         if (channel == null) {
             IrcServer.logger.info("User [%s] PART failed - can't find channel by name %s".formatted(client.toString(), channel.toString()));
@@ -31,8 +40,8 @@ public class PartMessage extends BaseMessage {
          * 2 - leave message
          */
         String preFormat = ":{0} PART {1} :{2}\r\n";
-        String msg = message.afterMessageType().substring(message.afterMessageType().indexOf(":"));
-        String postFormat = MessageFormat.format(preFormat, client.getPrefix(), channelStr, msg);
+        String postFormat = MessageFormat.format(preFormat, client.getPrefix(), getChannel(), getLeaveMessage());
+        channel.sendMessageToClients(postFormat);
         IrcServer.instance.broadcastMessage(postFormat);
     }
 }

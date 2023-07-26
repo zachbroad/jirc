@@ -9,7 +9,7 @@ import java.util.logging.*;
 public class IrcServer {
     public static final Logger logger = Logger.getLogger(IrcServer.class.getName());
     public static IrcServer instance;
-    public final String IRC_HOSTNAME = "127.0.0.1";
+    public final String IRC_HOSTNAME = "localhost";
     public final String name = "IRC";
     public final int IRC_PORT = 6667;
     public final int VERSION = 1;
@@ -119,7 +119,6 @@ public class IrcServer {
         if (!client.socket.isConnected()) {
             IrcServer.logger.warning("Client %s socket not connected.".formatted(client.getPrefix()));
         }
-        ;
 
         try {
             BufferedOutputStream outputStream = new BufferedOutputStream(client.socket.getOutputStream());
