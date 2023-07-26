@@ -37,37 +37,6 @@ public class Messages {
         server.sendMessageToClient(MessageFormat.format(":{0} PONG {1}\r\n", server.getPrefix(), identifier), client);
     }
 
-    /**
-     * :server 352 <user> <channel> <user> <host> <server> <nick> <H|G>[*][@|+] :<hopcount> <real name>
-     *
-     * @param client
-     * @param channel
-     */
-    public static void sendWhoMessage(IrcClient client, IrcChannel channel) {
-        for (var c : channel.clients) {
-            client.sendMessage(
-                    MessageFormat.format(
-                            ":{0} {1} {2} {3} {4} {5} {6} H :0 {7}\r\n",
-                            server.IRC_HOSTNAME, // 0
-                            Numerics.RPL_WHOREPLY, // 1
-                            client.username, // 2
-                            channel.name, // 3
-                            c.username, //4
-                            c.ipAddress.getHostAddress(), //5
-                            c.nickname,// 6
-                            c.username
-                    )
-            );
-        }
-        server.sendMessageToClient(
-                MessageFormat.format(
-                        ":{0} {1} {2} :End of WHO list\r\n",
-                        server.IRC_HOSTNAME, // 0
-                        Numerics.RPL_ENDOFWHO, // 1
-                        client.nickname // 2
-                ), client
-        );
-    }
 
     /**
      * Parse message & handle it
