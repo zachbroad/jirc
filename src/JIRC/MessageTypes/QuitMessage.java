@@ -13,7 +13,7 @@ public class QuitMessage extends BaseMessage {
     }
 
     String getQuitMessage() {
-        return message.raw.split(":")[1];
+        return message.getTrailer();
     }
 
     @Override

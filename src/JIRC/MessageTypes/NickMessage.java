@@ -16,22 +16,22 @@ public class NickMessage extends BaseMessage {
     public void handle() {
         String oldName = client.nickname; // store old
         client.nickname = message.afterMessageType(); // set new
-        if (oldName != null) {
+//        if (oldName != null) {
+//            IrcServer.instance.broadcastMessage(MessageFormat.format(
+//                    ":{0} NICK {2}\r\n",
+//                    oldName,
+//                    IrcServer.instance.IRC_HOSTNAME,
+//                    client.nickname
+//            ));
+//        } else {
             IrcServer.instance.broadcastMessage(MessageFormat.format(
                     ":{0} NICK {2}\r\n",
                     oldName,
                     IrcServer.instance.IRC_HOSTNAME,
                     client.nickname
             ));
-        } else {
-            IrcServer.instance.broadcastMessage(MessageFormat.format(
-                    ":{0} NICK {2}\r\n",
-                    oldName,
-                    IrcServer.instance.IRC_HOSTNAME,
-                    client.nickname
-            ));
-        }
+//        }
 
-        IrcServer.logger.info("Client %s sent name %s".formatted(client.toString(), client.nickname));
+        IrcServer.logger.info("Client %s sent nickname: %s".formatted(client.toString(), client.nickname));
     }
 }

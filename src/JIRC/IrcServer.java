@@ -121,6 +121,7 @@ public class IrcServer {
 
         if (!client.socket.isConnected()) {
             IrcServer.logger.warning("Client %s socket not connected.".formatted(client.getPrefix()));
+            return;
         }
 
         try {
@@ -142,7 +143,7 @@ public class IrcServer {
             server = new ServerSocket(IRC_PORT);
 
             // Create a fixed-size thread pool to handle clients concurrently
-            int numThreads = 10; // You can adjust this based on your requirements
+            int numThreads = 16; // You can adjust this based on your requirements
             ExecutorService executor = Executors.newFixedThreadPool(numThreads);
 
             while (isRunning) {

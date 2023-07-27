@@ -71,9 +71,17 @@ public class IrcMessage {
     }
 
     public String getTrailer() {
-        return raw.split(":")[1];
+        try {
+
+            if (afterMessageType().contains(":")) {
+                return afterMessageType().substring(afterMessageType().indexOf(":"));
+            }
+
+            return afterMessageType().split(" ")[1];
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return "INVALID";
     }
-
-
-
 }
