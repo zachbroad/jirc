@@ -4,37 +4,21 @@ import JIRC.IrcClient;
 import JIRC.IrcMessage;
 import JIRC.IrcServer;
 
+import java.util.List;
+
 public class JoinMessage extends BaseMessage {
 
     public JoinMessage(IrcMessage message, IrcClient client) {
         super(message, client);
     }
 
+    public List<String> getChannels() {
+        return List.of(message.getParams().get(0).split(","));
+    }
+
     @Override
     public void handle() {
-        // parse channels
-//        String[] parts = message.getParams().split(" ");
-//
-//        String[] channelsStr = null;
-//        // parse keys TODO
-//        String[] keysStr = null;
-//
-//        channelsStr = parts[0].split(",");
-//
-//        // TODO: Clean this up
-//        // optional key for join chan
-//        if (parts.length >= 2)
-//            keysStr = parts[1].split(",");
-//
-//        if (channelsStr == null) {
-//            IrcServer.logger.info("Couldn't find channel user wants to join");
-//            return;
-//        }
-
-        String[] channelsStr = message.getParams().get(0).split(",");
-
-
-        for (String channelName : channelsStr) {
+        for (String channelName : getChannels()) {
             client.attemptJoinChannelByName(channelName);
         }
     }

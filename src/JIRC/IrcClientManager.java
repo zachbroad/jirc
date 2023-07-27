@@ -1,12 +1,12 @@
 package JIRC;
 
-import java.util.ArrayList;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class IrcClientManager {
-    ArrayList<IrcClient> clients;
+    ConcurrentLinkedQueue<IrcClient> clients;
 
     public IrcClientManager() {
-        clients = new ArrayList<>();
+        clients = new ConcurrentLinkedQueue<>();
     }
 
     /**

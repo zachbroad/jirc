@@ -46,46 +46,49 @@ public class IrcServer {
         return "%s@%s".formatted(name, IRC_HOSTNAME);
     }
 
-    /**
-     * Handle data/messages sent to server from the client
-     *
-     * @param client who is sending the messages
-     */
     void handleClient(IrcClient client) {
-        if (!client.socket.isConnected()) return;
-//        logger.info("Handle client " + client.toString());
+        if (!isClientConnected(client)) return;
 
-        byte[] buffer = new byte[1024];
-        int bytesRead = 0;
+        String receivedData = readFromClient(client);
+        if (receivedData == null) return;
+
+        String[] messages = receivedData.split("\r\n");
+        for (String message : messages) {
+            processMessageFromClient(message, client);
+        }
+    }
+
+    boolean isClientConnected(IrcClient client) {
+        if (!client.socket.isConnected() || client.socket.isInputShutdown()) {
+            clientManager.removeClient(client);
+            IrcServer.logger.warning("Failed to read inputstream from client " + client.toString());
+            return false;
+        }
+        return true;
+    }
+
+    String readFromClient(IrcClient client) {
+        byte[] buffer = new byte[512];
         try {
-            if (client.socket.isInputShutdown()) return;
             InputStream inputStream = client.socket.getInputStream();
-            if (inputStream.available() == 0) return;
+            if (inputStream.available() == 0) return null;
 
-            bytesRead = inputStream.read(buffer);
-            if (bytesRead == 0) return;
-            if (bytesRead < 0) {
-                clientManager.removeClient(client);
-                IrcServer.logger.warning("Failed to read inputstream from client " + client.toString());
-                return;
-            }
+            int bytesRead = inputStream.read(buffer);
+            if (bytesRead <= 0) return null;
 
             // Read buffer into String and print
             String recv = new String(buffer, 0, bytesRead);
             System.out.println(recv);
 
-            String[] messages = recv.split("\r\n");
-
-//            JIRC.IrcServer.logger.info("Got %d messages".formatted(messages.length));
-
-
-            for (String message : messages) {
-                Messages.processMessage(new IrcMessage(message), client);
-            }
-
+            return recv;
         } catch (IOException e) {
             System.err.println("Exception while reading from client: " + e.getMessage());
+            return null;
         }
+    }
+
+    void processMessageFromClient(String message, IrcClient client) {
+        Messages.processMessage(new IrcMessage(message), client);
     }
 
     /**
@@ -135,21 +138,19 @@ public class IrcServer {
         }
     }
 
+
     /**
      * Set up the server & main loop
      */
     void startServer() {
-        try {
-            server = new ServerSocket(IRC_PORT);
-
-            // Create a fixed-size thread pool to handle clients concurrently
-            int numThreads = 16; // You can adjust this based on your requirements
+        try(ServerSocket server = new ServerSocket(IRC_PORT)) {
+            int numThreads = 16;
             ExecutorService executor = Executors.newFixedThreadPool(numThreads);
 
             while (isRunning) {
-                System.out.println("Accepting new clients");
                 Socket clientSocket = server.accept();
                 if (clientSocket.isConnected()) {
+                    // Set up the new client & add them to clientManager
                     IrcClient client = new IrcClient();
                     client.nickname = "";
                     client.socket = clientSocket;
@@ -157,13 +158,9 @@ public class IrcServer {
                     System.out.println("Client connected " + client.socket.getInetAddress().getHostAddress());
                     clientManager.clients.add(client);
 
-                    // Submit the client handling task to the executor
-                    executor.execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            while (clientManager.clients.contains(client)) {
-                                handleClient(client);
-                            }
+                    executor.execute(() -> {
+                        while (clientManager.clients.contains(client)) {
+                            handleClient(client);
                         }
                     });
                 } else {
@@ -171,11 +168,9 @@ public class IrcServer {
                 }
             }
 
-            // Shutdown the executor when the server is stopped
             executor.shutdown();
-
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
         }

@@ -11,7 +11,7 @@ public class PingMessage extends BaseMessage {
         super(message, client);
     }
 
-    String getIdentifier() {
+    public String getIdentifier() {
         return message.getParams().get(0);
     }
 

@@ -13,11 +13,11 @@ public class PartMessage extends BaseMessage {
     }
 
 
-    String getChannel() {
+    public String getChannel() {
         return message.getParams().get(0);
     }
 
-    String getLeaveMessage() {
+    public String getLeaveMessage() {
         return message.getParams().get(1);
     }
 

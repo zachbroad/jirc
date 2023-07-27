@@ -10,13 +10,16 @@ public class WhoMessage extends BaseMessage {
         super(message, client);
     }
 
+    public String getChannel() {
+        return message.getParams().get(0);
+    }
+
     /**
      * :server 352 <user> <channel> <user> <host> <server> <nick> <H|G>[*][@|+] :<hopcount> <real name>
      */
     @Override
     public void handle() {
-        String channel = message.getParams().get(0);
-        IrcChannel channelObj = server.channelManager.getChannelByName(channel);
+        IrcChannel channelObj = server.channelManager.getChannelByName(getChannel());
 
         if (channelObj == null) {
             client.sendMessage(

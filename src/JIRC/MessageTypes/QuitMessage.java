@@ -12,8 +12,8 @@ public class QuitMessage extends BaseMessage {
         super(message, client);
     }
 
-    String getQuitMessage() {
-        return message.getParams().get(1);
+    public String getQuitMessage() {
+        return message.getParams().get(0);
     }
 
     @Override
