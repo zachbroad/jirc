@@ -14,11 +14,11 @@ public class PartMessage extends BaseMessage {
 
 
     String getChannel() {
-        return message.raw.split(" ")[1];
+        return message.getParams().get(0);
     }
 
     String getLeaveMessage() {
-        return message.raw.split(":")[1];
+        return message.getParams().get(1);
     }
 
 

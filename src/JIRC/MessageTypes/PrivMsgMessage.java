@@ -11,14 +11,17 @@ public class PrivMsgMessage extends BaseMessage {
     }
 
     String getMessage() {
-        return message.getTrailer();
+        return message.getParams().get(1);
+    }
+
+    String getChannel() {
+        return message.getParams().get(0);
     }
 
     @Override
     public void handle() {
         String preFormat = ":{0} PRIVMSG {1} {2}\r\n";
-        String channel = message.afterMessageType().split(" ")[0];
-        String postFormat = MessageFormat.format(preFormat, client.getPrefix(), channel, getMessage());
+        String postFormat = MessageFormat.format(preFormat, client.getPrefix(), getChannel(), getMessage());
         server.broadcastMessageFromClient(postFormat, client);
     }
 }

@@ -45,7 +45,7 @@ public class TopicMessage extends BaseMessage {
     }
 
     String getChannelStr() {
-        return message.getFirstWord();
+        return message.getParams().get(0);
     }
 
     IrcChannel getChannel() {
@@ -53,7 +53,7 @@ public class TopicMessage extends BaseMessage {
     }
 
     String getTopic() {
-        return message.getTrailer();
+        return message.getParams().get(1);
     }
 
     boolean isCheckingTopic() {

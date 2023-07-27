@@ -15,7 +15,7 @@ public class NickMessage extends BaseMessage {
     @Override
     public void handle() {
         String oldName = client.nickname; // store old
-        client.nickname = message.afterMessageType(); // set new
+        client.nickname = message.getParams().get(0); // set new
 //        if (oldName != null) {
 //            IrcServer.instance.broadcastMessage(MessageFormat.format(
 //                    ":{0} NICK {2}\r\n",

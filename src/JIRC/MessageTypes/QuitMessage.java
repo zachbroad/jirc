@@ -13,7 +13,7 @@ public class QuitMessage extends BaseMessage {
     }
 
     String getQuitMessage() {
-        return message.getTrailer();
+        return message.getParams().get(1);
     }
 
     @Override

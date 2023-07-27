@@ -3,7 +3,6 @@ package JIRC.MessageTypes;
 import JIRC.IrcClient;
 import JIRC.IrcMessage;
 import JIRC.IrcServer;
-import JIRC.Messages;
 
 import java.text.MessageFormat;
 
@@ -13,7 +12,7 @@ public class PingMessage extends BaseMessage {
     }
 
     String getIdentifier() {
-        return message.afterMessageType();
+        return message.getParams().get(0);
     }
 
     @Override

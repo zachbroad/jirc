@@ -15,7 +15,7 @@ public class WhoMessage extends BaseMessage {
      */
     @Override
     public void handle() {
-        String channel = message.afterMessageType();
+        String channel = message.getParams().get(0);
         IrcChannel channelObj = server.channelManager.getChannelByName(channel);
 
         if (channelObj == null) {

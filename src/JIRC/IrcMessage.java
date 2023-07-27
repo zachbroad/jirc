@@ -33,55 +33,105 @@ package JIRC;/*
  */
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Queue;
 
 public class IrcMessage {
+    private String prefix;
+    private String command;
+    private List<String> params;
     public String raw;
-    public IrcMessageType type;
 
-    public IrcMessage(String raw) {
-        this.raw = raw;
+    public IrcMessage(String rawMessage) {
+        raw = rawMessage.trim();
+        this.params = new ArrayList<>();
+        parseMessage(rawMessage.trim());
     }
 
-    /**
-     * Gets the part of the message after the first word/part
-     *
-     * @return the part of the message after type (ex: JOIN #channel -> returns #channel)
-     */
-    public String afterMessageType() {
-        return raw.substring(raw.indexOf(' ') + 1, raw.length());
-    }
+    private void parseMessage(String rawMessage) {
+        String[] parts = rawMessage.split(" :", 2);
+        String[] msgParts = parts[0].split(" ");
 
-    public Queue<String> partsOfMessage() {
-        String[] arrOfMessageParts = this.raw.split(" ");
+        int startIndex = 0;
 
-        Queue<String> partsOfMessage = new ArrayDeque<>();
-        for (var m : arrOfMessageParts) {
-            partsOfMessage.add(m);
-        }
-        return partsOfMessage;
-    }
-
-    public String getMessageType() {
-        return raw.split(" ")[0];
-    }
-
-    public String getFirstWord() {
-        return raw.split(" ")[1];
-    }
-
-    public String getTrailer() {
-        try {
-
-            if (afterMessageType().contains(":")) {
-                return afterMessageType().substring(afterMessageType().indexOf(":"));
-            }
-
-            return afterMessageType().split(" ")[1];
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (msgParts[0].startsWith(":")) {
+            this.prefix = msgParts[0].substring(1);
+            startIndex++;
         }
 
-        return "INVALID";
+        this.command = msgParts[startIndex++];
+
+        for (int i = startIndex; i < msgParts.length; i++) {
+            this.params.add(msgParts[i]);
+        }
+
+        if (parts.length > 1) {
+            this.params.add(parts[1]);
+        }
+    }
+
+    // getters
+    public String getPrefix() {
+        return prefix;
+    }
+
+    public String getCommand() {
+        return command;
+    }
+
+    public List<String> getParams() {
+        return params;
     }
 }
+
+//public class IrcMessage {
+//    public String raw;
+//    public IrcMessageType type;
+//
+//    public IrcMessage(String raw) {
+//        this.raw = raw;
+//    }
+//
+//    /**
+//     * Gets the part of the message after the first word/part
+//     *
+//     * @return the part of the message after type (ex: JOIN #channel -> returns #channel)
+//     */
+//    public String getCommands() {
+//        return raw.substring(raw.indexOf(' ') + 1, raw.length());
+//    }
+//
+//    public Queue<String> partsOfMessage() {
+//        String[] arrOfMessageParts = this.raw.split(" ");
+//
+//        Queue<String> partsOfMessage = new ArrayDeque<>();
+//        for (var m : arrOfMessageParts) {
+//            partsOfMessage.add(m);
+//        }
+//        return partsOfMessage;
+//    }
+//
+//    public String getMessageType() {
+//        return raw.split(" ")[0];
+//    }
+//
+//    public String getFirstWord() {
+//        return raw.split(" ")[1];
+//    }
+//
+//    public String getTrailer() {
+//        try {
+//
+//            if (getCommands().contains(":")) {
+//                return getCommands().substring(getCommands().indexOf(":"));
+//            }
+//
+//            return getCommands().split(" ")[1];
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//        return "INVALID";
+//    }
+//}

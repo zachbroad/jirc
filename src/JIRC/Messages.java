@@ -31,10 +31,10 @@ public class Messages {
     public static void processMessage(IrcMessage ircMessage, IrcClient client) {
         // Process all messages
 
-        if (ircMessage.getMessageType() == null) return;
+        if (ircMessage.getCommand() == null) return;
 
 
-        switch (ircMessage.getMessageType().toUpperCase()) {
+        switch (ircMessage.getCommand().toUpperCase()) {
             case "CAP" -> {
                 IrcServer.logger.info("TODO: CAP");
             }

@@ -29,8 +29,8 @@ public class UserMessage extends BaseMessage {
     @Override
     public void handle() {
         IrcServer.logger.info(MessageFormat.format("Client {0} wants to register", client.toString()));
-        String username = message.afterMessageType().split(" ")[0];
-        String realname = message.raw.split(":")[1];
+        String username = message.getParams().get(0);
+        String realname = message.getParams().get(3);
         IrcServer.logger.info(MessageFormat.format("Got username {0}", username));
         IrcServer.logger.info(MessageFormat.format("Got realname {0}", realname));
         client.username = username;
