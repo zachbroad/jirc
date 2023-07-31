@@ -2,8 +2,6 @@ package JIRC;
 
 import JIRC.MessageTypes.*;
 
-import java.text.MessageFormat;
-
 
 /*
     Most of the messages sent to the server generate a reply of some
@@ -18,9 +16,7 @@ import java.text.MessageFormat;
  */
 
 
-public class Messages {
-    private static IrcServer server = IrcServer.instance;
-
+public class IrcMessageProcessor {
     /**
      * Parse message & handle it
      * TODO: move message cases to their own files
@@ -52,6 +48,7 @@ public class Messages {
                 new MotdMessage(ircMessage, client).handle();
             }
             case "OPER" -> {
+                new OperMessage(ircMessage, client).handle();
             }
             case "SERVICE" -> {
             }

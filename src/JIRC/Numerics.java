@@ -38,6 +38,11 @@ public class Numerics {
     public static final int RPL_MOTDSTART = 375;
     public static final int RPL_MOTD = 372;
     public static final int RPL_MOTDEND = 376;
+
+    // OPER
+    public static final int RPL_YOUREOPER = 381;
+
+    // MISC
     public static final int RPL_TIME = 391;
 
     // Errors
@@ -47,4 +52,8 @@ public class Numerics {
     public static final int ERR_NOSUCHCHANNEL = 403; // <channel name> :No such channel
     public static final int ERR_CANNOTSENDTOCHAN = 404;
     public static final int ERR_NOTONCHANNEL = 442; // <channel> :You're not on that channel
+
+    public static final int ERR_NEEDMOREPARAMS = 461; //  <command> :Not enough parameters
+    public static final int ERR_NOPERMFORHOST = 463; //  :Your host isn't among the privileged
+    public static final int ERR_PASSWDMISMATCH = 464; //  :Password incorrect
 }

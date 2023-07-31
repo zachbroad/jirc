@@ -1,7 +1,7 @@
 package JIRC;
 
-import java.net.InetAddress;
 import java.net.Socket;
+import java.nio.channels.Channel;
 import java.text.MessageFormat;
 
 public class IrcClient {
@@ -11,9 +11,11 @@ public class IrcClient {
     public String realname; // name user registered under
     public String awayMessage;
     public Socket socket;
+    public Channel channel;
     public String ipAddress;
     public boolean registered;
     public boolean visible;
+    private boolean operator;
     private IrcClientManager clientManager;
 
     public IrcClient() {
@@ -35,11 +37,12 @@ public class IrcClient {
         return "%s!%s@%s".formatted(nickname, username, socket.getInetAddress().getHostAddress());
     }
 
-    /**
-     * Remove client from JIRC.IrcClientManager list
-     */
-    public void remove() {
-        this.clientManager.removeClient(this);
+    public void giveOperatorPerms() {
+        this.operator = true;
+    }
+
+    public boolean isOperator() {
+        return this.operator;
     }
 
     /**
@@ -120,7 +123,7 @@ public class IrcClient {
         IrcChannel channelToJoin = server.channelManager.getChannelByName(channelName);
 
         if (channelToJoin == null) {
-            Responses.errorNoSuchMessage(this, channelName);
+            Responses.errorNoSuchChannel(this, channelName);
             return false;
         }
 

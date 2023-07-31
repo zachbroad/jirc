@@ -2,25 +2,30 @@ package JIRC;
 
 import java.io.*;
 import java.net.*;
+import java.nio.channels.ServerSocketChannel;
+import java.nio.channels.SocketChannel;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.*;
+import java.nio.*;
 
 
 public class IrcServer {
     public static final Logger logger = Logger.getLogger(IrcServer.class.getName());
     public static IrcServer instance;
     public final String IRC_HOSTNAME = "localhost";
-    public final String name = "IRC";
+    public final String serverName = "IRC";
     public final int IRC_PORT = 6667;
     public final int VERSION = 1;
     public final String password = "letmein";
+
     public LocalDateTime dateTimeCreated;
-    public String motd;
+    public List<String> motd;
+
     public IrcClientManager clientManager = new IrcClientManager();
     public IrcChannelManager channelManager = new IrcChannelManager();
-    ServerSocket server;
     private boolean isRunning = true;
 
     public IrcServer() {
@@ -33,17 +38,19 @@ public class IrcServer {
         dateTimeCreated = LocalDateTime.now();
 
         // TODO: load from file
-        this.motd = "hello world";
+        this.motd = IrcMotd.getMotd();
 
 
         // Create initial channel
         this.channelManager.addChannel(new IrcChannel("#general", "lorem ipsum dolor"));
         this.channelManager.addChannel(new IrcChannel("#test", "test channel 123"));
         this.channelManager.addChannel(new IrcChannel("#channel", "another channel"));
+
+        IrcOperator.parseOperators();
     }
 
     public String getPrefix() {
-        return "%s@%s".formatted(name, IRC_HOSTNAME);
+        return "%s@%s".formatted(serverName, IRC_HOSTNAME);
     }
 
     void handleClient(IrcClient client) {
@@ -68,27 +75,32 @@ public class IrcServer {
     }
 
     String readFromClient(IrcClient client) {
-        byte[] buffer = new byte[512];
+        if (!client.socket.isConnected()) return null;
         try {
-            InputStream inputStream = client.socket.getInputStream();
-            if (inputStream.available() == 0) return null;
+            SocketChannel channel = client.socket.getChannel();
+            ByteBuffer buffer = ByteBuffer.allocate(512);
+            int bytesRead = channel.read(buffer);
 
-            int bytesRead = inputStream.read(buffer);
-            if (bytesRead <= 0) return null;
+            if (bytesRead == -1) {
+                clientManager.removeClient(client);
+            } else if (bytesRead > 0) {
+                buffer.flip();
 
-            // Read buffer into String and print
-            String recv = new String(buffer, 0, bytesRead);
-            System.out.println(recv);
+                String recvData = new String(buffer.array(), 0, bytesRead);
+                System.out.println(recvData);
 
-            return recv;
+                return recvData;
+            }
+
         } catch (IOException e) {
-            System.err.println("Exception while reading from client: " + e.getMessage());
-            return null;
+            e.printStackTrace();
         }
+
+        return null;
     }
 
     void processMessageFromClient(String message, IrcClient client) {
-        Messages.processMessage(new IrcMessage(message), client);
+        IrcMessageProcessor.processMessage(new IrcMessage(message), client);
     }
 
     /**
@@ -142,19 +154,25 @@ public class IrcServer {
     /**
      * Set up the server & main loop
      */
+
     void startServer() {
-        try(ServerSocket server = new ServerSocket(IRC_PORT)) {
+        try {
+            ServerSocketChannel server = ServerSocketChannel.open();
+            server.configureBlocking(false);
+            server.bind(new InetSocketAddress(IRC_PORT));
+
             int numThreads = 16;
             ExecutorService executor = Executors.newFixedThreadPool(numThreads);
 
             while (isRunning) {
-                Socket clientSocket = server.accept();
-                if (clientSocket.isConnected()) {
+                SocketChannel clientChannel = server.accept();
+
+                if (clientChannel != null) {
                     // Set up the new client & add them to clientManager
                     IrcClient client = new IrcClient();
                     client.nickname = "";
-                    client.socket = clientSocket;
-                    client.ipAddress = clientSocket.getInetAddress().getHostAddress();
+                    client.socket = clientChannel.socket();
+                    client.ipAddress = clientChannel.socket().getInetAddress().getHostAddress();
                     System.out.println("Client connected " + client.socket.getInetAddress().getHostAddress());
                     clientManager.clients.add(client);
 
@@ -164,7 +182,12 @@ public class IrcServer {
                         }
                     });
                 } else {
-                    logger.warning("Client %s not connected?!".formatted(clientSocket.toString()));
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+//                    logger.warning("Client %s not connected?!".formatted(clientChannel));
                 }
             }
 
@@ -175,5 +198,4 @@ public class IrcServer {
             e.printStackTrace();
         }
     }
-
 }

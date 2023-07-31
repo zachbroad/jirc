@@ -59,7 +59,7 @@ public class Responses {
                 Numerics.RPL_MYINFO, // 1
                 client.nickname, // 2
                 IrcServer.instance.dateTimeCreated.toString(), // 3
-                IrcServer.instance.name // 4
+                IrcServer.instance.serverName // 4
         ));
     }
 
@@ -151,15 +151,17 @@ public class Responses {
                 IrcServer.instance.IRC_HOSTNAME, // 0
                 Numerics.RPL_MOTDSTART, // 1
                 client.nickname, // 2
-                IrcServer.instance.name // 3
+                IrcServer.instance.serverName // 3
         ));
-        client.sendMessage(MessageFormat.format(
-                ":{0} {1} {2} :- {3}\r\n",
-                IrcServer.instance.IRC_HOSTNAME, // 0
-                Numerics.RPL_MOTD, // 1
-                client.nickname, // 2
-                IrcServer.instance.motd // 3
-        ));
+        for (String motdLine : IrcServer.instance.motd) {
+            client.sendMessage(MessageFormat.format(
+                    ":{0} {1} {2} :- {3}\r\n",
+                    IrcServer.instance.IRC_HOSTNAME, // 0
+                    Numerics.RPL_MOTD, // 1
+                    client.nickname, // 2
+                    motdLine // 3
+            ));
+        }
         client.sendMessage(MessageFormat.format(
                 ":{0} {1} {2} :End of MOTD command\r\n",
                 IrcServer.instance.IRC_HOSTNAME, // 0
@@ -169,13 +171,56 @@ public class Responses {
         ));
     }
 
+    /**
+     * 381 RPL_YOUREOPER
+     */
+    public static void sendOperYoureOper(IrcClient client) {
+        client.sendMessage(MessageFormat.format(
+                ":{0} {1} {2} :You are now an IRC operator\r\n",
+                IrcServer.instance.IRC_HOSTNAME, // 0
+                Numerics.RPL_YOUREOPER, // 1
+                client.nickname // 2
+        ));
+    }
+
+
     /****************************************************************************
      ***************************** ERRORS ***************************************
      ****************************************************************************/
-    public static void errorNoSuchMessage(IrcClient client, String channelName) {
-        String preFormat = ":{0} {1} {2} :No such channel\r\n";
-        String postFormat = MessageFormat.format(preFormat, IrcServer.instance.IRC_HOSTNAME, Numerics.ERR_NOSUCHCHANNEL, channelName);
+    public static void errorNoSuchChannel(IrcClient client, String channelName) {
+        String postFormat = MessageFormat.format(
+                ":{0} {1} {2} :No such channel\r\n",
+                IrcServer.instance.IRC_HOSTNAME,
+                Numerics.ERR_NOSUCHCHANNEL,
+                channelName
+        );
         client.sendMessage(postFormat);
+    }
+
+    /**
+     * 461 ERR_NEEDMOREPARAMS
+     */
+    public static void errorNeedMoreParams(IrcClient client, String command) {
+        client.sendMessage(MessageFormat.format(
+                ":{0} {1} {2} {3} :Not enough parameters\r\n",
+                IrcServer.instance.IRC_HOSTNAME, // 0
+                Numerics.ERR_NEEDMOREPARAMS, // 1
+                client.nickname, // 2
+                command
+        ));
+    }
+
+
+    /**
+     * 464 ERR_PASSWDMISMATCH
+     */
+    public static void errorPasswordMismatch(IrcClient client) {
+        client.sendMessage(MessageFormat.format(
+                ":{0} {1} {2} :Password incorrect\r\n",
+                IrcServer.instance.IRC_HOSTNAME, // 0
+                Numerics.ERR_PASSWDMISMATCH, // 1
+                client.nickname // 2
+        ));
     }
 
 

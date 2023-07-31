@@ -1,0 +1,3 @@
+MOTD test test test
+multiline motd
+lorem ipsum dolor
