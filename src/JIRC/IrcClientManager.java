@@ -9,6 +9,13 @@ public class IrcClientManager {
         clients = new ConcurrentLinkedQueue<>();
     }
 
+    public IrcClient getClientByNickname(String name) {
+        return clients.stream()
+                .filter(c -> c.username.equals(name) || c.nickname.equals(name))
+                .findFirst()
+                .orElse(null);
+    }
+
     /**
      * Add a client to JIRC.IrcClientManager
      *

@@ -4,6 +4,7 @@ import java.io.*;
 import java.net.*;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -141,6 +142,7 @@ public class IrcServer {
 
         try {
             BufferedOutputStream outputStream = new BufferedOutputStream(client.socket.getOutputStream());
+//            outputStream.write(message.getBytes(StandardCharsets.UTF_8));
             for (char c : message.toCharArray()) {
                 outputStream.write(c);
             }

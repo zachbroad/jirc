@@ -28,9 +28,9 @@ public class ListMessage extends BaseMessage {
                             IrcServer.instance.IRC_HOSTNAME, // 0
                             Numerics.RPL_LIST, // 1
                             client.nickname, // 2
-                            channel.name, // 3
-                            channel.clients.size(), // 4
-                            channel.topic // 5
+                            channel.getName(), // 3
+                            channel.getClients().size(), // 4
+                            channel.getTopic() // 5
                     ), client
             );
         }

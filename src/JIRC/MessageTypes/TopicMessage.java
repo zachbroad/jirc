@@ -73,7 +73,7 @@ public class TopicMessage extends BaseMessage {
         if (isCheckingTopic()) {
             // server RPL_TOPIC channel
             String msg = ":{0} {1} {2} {3} :{4}\r\n";
-            msg = MessageFormat.format(msg, server.IRC_HOSTNAME, Numerics.RPL_TOPIC, client.nickname, getChannel().name, getChannel().topic);
+            msg = MessageFormat.format(msg, server.IRC_HOSTNAME, Numerics.RPL_TOPIC, client.nickname, getChannel().getName(), getChannel().getTopic());
             client.sendMessage(msg);
         }
 

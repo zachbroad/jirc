@@ -3,21 +3,22 @@ package JIRC;
 import java.util.ArrayList;
 
 public class IrcChannel {
-    public String name;
-    public String topic;
-    public ArrayList<IrcClient> clients = new ArrayList<>();
-    public int maxCapacity;
+    private String name;
+    private String topic;
+    private ArrayList<IrcClient> clients = new ArrayList<>();
+    private int maxCapacity;
 
     public IrcChannel() {}
 
     public IrcChannel(String name, String topic) {
-        this.name = name;
-        this.topic = topic;
+        this.setName(name);
+        this.setTopic(topic);
     }
+
 
     @Override
     public String toString() {
-        return "%s - %s".formatted(this.name, this.topic);
+        return "%s - %s".formatted(this.getName(), this.getTopic());
     }
 
     /**
@@ -26,7 +27,7 @@ public class IrcChannel {
      * @param message raw message to send
      */
     public void sendMessageToClients(String message) {
-        for (IrcClient client : this.clients) {
+        for (IrcClient client : this.getClients()) {
             client.sendMessage(message);
         }
     }
@@ -37,7 +38,7 @@ public class IrcChannel {
      * @param client to add
      */
     public void addClient(IrcClient client) {
-        clients.add(client);
+        getClients().add(client);
 //        if (!this.clients.contains(client) && currentCapacity() < maxCapacity) {
 //        } else {
 //            JIRC.IrcServer.logger.warning("User tried to join channel [%s] they're already in!".formatted(this.name));
@@ -50,11 +51,15 @@ public class IrcChannel {
      * @param client to remove
      */
     public void removeClient(IrcClient client) {
-        if (this.clients.contains(client)) {
-            clients.remove(client);
+        if (this.getClients().contains(client)) {
+            getClients().remove(client);
         } else {
             IrcServer.logger.warning("User tried to leave channel they're not in!");
         }
+    }
+
+    public boolean hasClient(IrcClient client) {
+        return this.clients.stream().anyMatch(c -> c.username.equals(client.username));
     }
 
     /**
@@ -62,7 +67,31 @@ public class IrcChannel {
      *
      * @return how many clients are currently connected to the channel
      */
-    public int currentCapacity() {
-        return this.clients.size();
+    public int howManyClients() {
+        return this.getClients().size();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getTopic() {
+        return topic;
+    }
+
+    public void setTopic(String topic) {
+        this.topic = topic;
+    }
+
+    public ArrayList<IrcClient> getClients() {
+        return clients;
+    }
+
+    public int getMaxCapacity() {
+        return maxCapacity;
     }
 }

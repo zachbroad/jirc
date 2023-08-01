@@ -75,7 +75,7 @@ public class IrcClient {
             return false;
         }
 
-        if (channel.clients.contains(this)) {
+        if (channel.getClients().contains(this)) {
             IrcServer.logger.warning("User attempted to join channel they're already in.");
             return false;
         }
@@ -89,13 +89,13 @@ public class IrcClient {
         server.broadcastMessage(toBroadcast);
 
         String joinMsgPre = ":{0} JOIN {1}\r\n";
-        String joinMsgPost = MessageFormat.format(joinMsgPre, this.getPrefix(), channel.name);
+        String joinMsgPost = MessageFormat.format(joinMsgPre, this.getPrefix(), channel.getName());
         this.sendMessage(joinMsgPost);
 
 
 
         // Send RPL_TOPIC if we have it, otherwise RPL_NOTOPIC
-        if (channel.topic != null) {
+        if (channel.getTopic() != null) {
             Responses.sendTopicMessage(this, channel);
         } else {
             Responses.sendNoTopicMessage(this, channel);

@@ -72,7 +72,9 @@ public class IrcMessageProcessor {
                 new ListMessage(ircMessage, client).handle();
             }
             case "INVITE" -> {}
-            case "KICK" -> {}
+            case "KICK" -> {
+                new KickMessage(ircMessage, client).handle();
+            }
             case "PRIVMSG" -> {
                 new PrivMsgMessage(ircMessage, client).handle();
             }

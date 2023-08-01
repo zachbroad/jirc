@@ -32,14 +32,14 @@ public class WhoMessage extends BaseMessage {
             return;
         }
 
-        for (var c : channelObj.clients) {
+        for (var c : channelObj.getClients()) {
             client.sendMessage(
                     MessageFormat.format(
                             ":{0} {1} {2} {3} {4} {5} {6} H :0 {7}\r\n",
                             server.IRC_HOSTNAME, // 0
                             Numerics.RPL_WHOREPLY, // 1
                             client.username, // 2
-                            channelObj.name, // 3
+                            channelObj.getName(), // 3
                             c.username, //4
                             c.ipAddress, //5
                             c.nickname,// 6

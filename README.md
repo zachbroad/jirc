@@ -32,6 +32,8 @@ JIRC is an Internet Relay Chat (IRC) server written in Java. IRC is a protocol t
 
 - **Logging:** Implement more extensive logging to help with debugging and understanding server operation.
 
+- **Desktop or Web UI**: Implement a desktop UI for simple server management or a web UI for remote management.
+
 ## Contributing
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.

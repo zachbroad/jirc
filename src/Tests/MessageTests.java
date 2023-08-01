@@ -126,4 +126,13 @@ public class MessageTests {
         assertEquals(whoMessage.getChannel(), "#channel");
     }
 
+    @Test
+    void testKickMessage() {
+        IrcMessage message = new IrcMessage("KICK #channel zach test");
+        KickMessage kickMessage = new KickMessage(message, client);
+        assertEquals(kickMessage.getChannel(), "#channel");
+        assertEquals(kickMessage.getUser(), "zach");
+        assertEquals(kickMessage.getMessage(), "test");
+    }
+
 }
