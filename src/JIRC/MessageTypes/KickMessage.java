@@ -81,7 +81,7 @@ public class KickMessage extends BaseMessage {
                                 ":{0} KICK {1} {2} :{3}\r\n",
                                 client.getPrefix(), // 0
                                 getChannel(), // 1
-                                clientToKick.nickname, // 2
+                                clientToKick.getNickname(), // 2
                                 getMessage() // 3
                         )
                 );
@@ -91,11 +91,11 @@ public class KickMessage extends BaseMessage {
                                 ":{0} KICK {1} {2}\r\n",
                                 client.getPrefix(), // 0
                                 getChannel(), // 1
-                                clientToKick.nickname // 2
+                                clientToKick.getNickname() // 2
                         )
                 );
             }
-            channel.removeClient(clientToKick);
+            client.leaveChannel(channel);
         } else {
             Responses.errorUserNotInChannel(client, getUser(), getChannel());
         }

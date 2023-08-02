@@ -11,7 +11,7 @@ public class IrcClientManager {
 
     public IrcClient getClientByNickname(String name) {
         return clients.stream()
-                .filter(c -> c.username.equals(name) || c.nickname.equals(name))
+                .filter(c -> c.getUsername().equals(name) || c.getNickname().equals(name))
                 .findFirst()
                 .orElse(null);
     }
@@ -42,6 +42,6 @@ public class IrcClientManager {
      */
     void registerClientAsUser(IrcClient client, String username) {
         // TODO ADD MORE REG & broadcast to server
-        client.registered = true;
+        client.setRegistered(true);
     }
 }

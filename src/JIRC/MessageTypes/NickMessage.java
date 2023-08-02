@@ -18,15 +18,15 @@ public class NickMessage extends BaseMessage {
 
     @Override
     public void handle() {
-        String oldName = client.nickname; // store old
-        client.nickname = getNickname();
+        String oldName = client.getNickname(); // store old
+        client.setNickname(getNickname());
         IrcServer.instance.broadcastMessage(MessageFormat.format(
                 ":{0} NICK {2}\r\n",
                 oldName,
                 IrcServer.instance.IRC_HOSTNAME,
-                client.nickname
+                client.getNickname()
         ));
 
-        IrcServer.logger.info("Client %s sent nickname: %s".formatted(client.toString(), client.nickname));
+        IrcServer.logger.info("Client %s sent nickname: %s".formatted(client.toString(), client.getNickname()));
     }
 }

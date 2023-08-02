@@ -3,24 +3,28 @@ package JIRC;
 import java.net.Socket;
 import java.nio.channels.Channel;
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
 public class IrcClient {
     private final IrcServer server = IrcServer.instance;
-    public String nickname;
-    public String username; // name user registered under
-    public String realname; // name user registered under
-    public String awayMessage;
-    public Socket socket;
-    public Channel channel;
-    public String ipAddress;
-    public boolean registered;
-    public boolean visible;
+    private final IrcClientManager clientManager;
+    private String nickname;
+    private String username;
+    private String realname;
+    private String awayMessage;
+    private Socket socket;
+    private Channel channel;
+    private String ipAddress;
+    private boolean registered;
+    private boolean visible;
     private boolean operator;
-    private IrcClientManager clientManager;
+    private List<IrcChannel> channels = new ArrayList<>();
 
     public IrcClient() {
         clientManager = server.clientManager;
-        visible = true;
+        setVisible(true);
     }
 
     @Override
@@ -64,6 +68,14 @@ public class IrcClient {
         server.sendMessageToClient(message, this);
     }
 
+    public void removeChannelFromConnected(IrcChannel channel) {
+        channels.remove(channel);
+    }
+
+    public void addChannelToConnected(IrcChannel channel) {
+        channels.add(channel);
+    }
+
     /**
      * Add client to JIRC.IrcChannel
      *
@@ -81,17 +93,17 @@ public class IrcClient {
         }
 
         // Add to channel's client list
-        channel.addClient(this);
+        channel.addClientToConnectedList(this);
 
         // Build JOIN message to broadcast to server & send to whole server
         String s = ":{0}@{1} JOIN {2}\r\n";
-        String toBroadcast = MessageFormat.format(s, this.nickname, server.IRC_HOSTNAME, channel);
+        String toBroadcast = MessageFormat.format(s, nickname, server.IRC_HOSTNAME, channel);
         server.broadcastMessage(toBroadcast);
 
         String joinMsgPre = ":{0} JOIN {1}\r\n";
         String joinMsgPost = MessageFormat.format(joinMsgPre, this.getPrefix(), channel.getName());
-        this.sendMessage(joinMsgPost);
 
+        this.sendMessage(joinMsgPost);
 
 
         // Send RPL_TOPIC if we have it, otherwise RPL_NOTOPIC
@@ -110,7 +122,10 @@ public class IrcClient {
      * @param channel to leave
      */
     public void leaveChannel(IrcChannel channel) {
-        channel.removeClient(this);
+        if (channel.hasClient(this)) {
+            channel.removeClientFromConnected(this);
+        }
+        removeChannelFromConnected(channel);
     }
 
     /**
@@ -128,5 +143,87 @@ public class IrcClient {
         }
 
         return this.joinChannel(channelToJoin);
+    }
+
+    // Return all unique clients that are in a channel with this client
+    public HashSet<IrcClient> getRelatedClients() {
+        HashSet<IrcClient> clients = new HashSet<>();
+        for (var c : channels) {
+            clients.addAll(c.getClients());
+        }
+
+        return clients;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getRealname() {
+        return realname;
+    }
+
+    public void setRealname(String realname) {
+        this.realname = realname;
+    }
+
+    public String getAwayMessage() {
+        return awayMessage;
+    }
+
+    public void setAwayMessage(String awayMessage) {
+        this.awayMessage = awayMessage;
+    }
+
+    public Socket getSocket() {
+        return socket;
+    }
+
+    public void setSocket(Socket socket) {
+        this.socket = socket;
+    }
+
+    public Channel getChannel() {
+        return channel;
+    }
+
+    public void setChannel(Channel channel) {
+        this.channel = channel;
+    }
+
+    public String getIpAddress() {
+        return ipAddress;
+    }
+
+    public void setIpAddress(String ipAddress) {
+        this.ipAddress = ipAddress;
+    }
+
+    public boolean isRegistered() {
+        return registered;
+    }
+
+    public void setRegistered(boolean registered) {
+        this.registered = registered;
+    }
+
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
     }
 }

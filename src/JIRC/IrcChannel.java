@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class IrcChannel {
     private String name;
     private String topic;
-    private ArrayList<IrcClient> clients = new ArrayList<>();
+    private ArrayList<IrcClient> connectedClients = new ArrayList<>();
     private int maxCapacity;
 
     public IrcChannel() {}
@@ -18,7 +18,7 @@ public class IrcChannel {
 
     @Override
     public String toString() {
-        return "%s - %s".formatted(this.getName(), this.getTopic());
+        return "%s - %s".formatted(name, topic);
     }
 
     /**
@@ -27,18 +27,26 @@ public class IrcChannel {
      * @param message raw message to send
      */
     public void sendMessageToClients(String message) {
-        for (IrcClient client : this.getClients()) {
+        for (IrcClient client : connectedClients) {
             client.sendMessage(message);
         }
     }
 
+    public void connectClient(IrcClient client) {
+        client.addChannelToConnected(this);
+        connectedClients.add(client);
+    }
+
     /**
      * Add client to channel
+     * Not used to add the client itself, use client.joinChannel()
      *
      * @param client to add
      */
-    public void addClient(IrcClient client) {
-        getClients().add(client);
+    public void addClientToConnectedList(IrcClient client) {
+        connectedClients.add(client);
+
+        // TODO: max capacity
 //        if (!this.clients.contains(client) && currentCapacity() < maxCapacity) {
 //        } else {
 //            JIRC.IrcServer.logger.warning("User tried to join channel [%s] they're already in!".formatted(this.name));
@@ -46,20 +54,20 @@ public class IrcChannel {
     }
 
     /**
-     * Remove client from channel
-     *
+     * Remove client from client connected list
+     * Not used to remove the client itself, use client.leaveChannel()
      * @param client to remove
      */
-    public void removeClient(IrcClient client) {
-        if (this.getClients().contains(client)) {
-            getClients().remove(client);
+    public void removeClientFromConnected(IrcClient client) {
+        if (this.connectedClients.contains(client)) {
+            connectedClients.remove(client);
         } else {
             IrcServer.logger.warning("User tried to leave channel they're not in!");
         }
     }
 
     public boolean hasClient(IrcClient client) {
-        return this.clients.stream().anyMatch(c -> c.username.equals(client.username));
+        return this.connectedClients.stream().anyMatch(c -> c.getUsername().equals(client.getUsername()));
     }
 
     /**
@@ -68,7 +76,7 @@ public class IrcChannel {
      * @return how many clients are currently connected to the channel
      */
     public int howManyClients() {
-        return this.getClients().size();
+        return this.connectedClients.size();
     }
 
     public String getName() {
@@ -88,7 +96,7 @@ public class IrcChannel {
     }
 
     public ArrayList<IrcClient> getClients() {
-        return clients;
+        return connectedClients;
     }
 
     public int getMaxCapacity() {

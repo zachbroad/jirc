@@ -11,7 +11,7 @@ public class WhoMessage extends BaseMessage {
     }
 
     public String getChannel() {
-        return message.getParams().get(0);
+        return message.getParams().size() > 0 ? message.getParams().get(0) : null;
     }
 
     /**
@@ -38,12 +38,12 @@ public class WhoMessage extends BaseMessage {
                             ":{0} {1} {2} {3} {4} {5} {6} H :0 {7}\r\n",
                             server.IRC_HOSTNAME, // 0
                             Numerics.RPL_WHOREPLY, // 1
-                            client.username, // 2
+                            client.getUsername(), // 2
                             channelObj.getName(), // 3
-                            c.username, //4
-                            c.ipAddress, //5
-                            c.nickname,// 6
-                            c.username
+                            c.getUsername(), //4
+                            c.getIpAddress(), //5
+                            c.getNickname(),// 6
+                            c.getUsername()
                     )
             );
         }
@@ -52,7 +52,7 @@ public class WhoMessage extends BaseMessage {
                         ":{0} {1} {2} :End of WHO list\r\n",
                         server.IRC_HOSTNAME, // 0
                         Numerics.RPL_ENDOFWHO, // 1
-                        client.nickname // 2
+                        client.getNickname() // 2
                 ), client
         );
     }

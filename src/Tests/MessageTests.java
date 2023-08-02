@@ -18,9 +18,9 @@ public class MessageTests {
     MessageTests() {
         server = new IrcServer();
         client = new IrcClient();
-        client.nickname = "zach";
-        client.username = "zachy64";
-        client.realname = "Zachary Broad";
+        client.setNickname("zach");
+        client.setUsername("zachy64");
+        client.setRealname("Zachary Broad");
     }
 
     // TODO: Figure out how to test this

@@ -38,8 +38,8 @@ public class UserMessage extends BaseMessage {
         IrcServer.logger.info(MessageFormat.format("Client {0} wants to register", client.toString()));
         IrcServer.logger.info(MessageFormat.format("Got username {0}", getUsername()));
         IrcServer.logger.info(MessageFormat.format("Got realname {0}", getRealname()));
-        client.username = getUsername();
-        client.realname = getRealname();
+        client.setUsername(getUsername());
+        client.setRealname(getRealname());
 
         sendWelcomeMessage(client);
     }

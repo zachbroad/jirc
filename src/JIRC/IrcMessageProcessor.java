@@ -83,7 +83,9 @@ public class IrcMessageProcessor {
             case "VERSION" -> {}
             case "STATS" -> {}
             case "LINKS" -> {}
-            case "TIME" -> {}
+            case "TIME" -> {
+                new TimeMessage(ircMessage, client).handle();
+            }
             case "CONNECT" -> {}
             case "TRACE" -> {}
             case "ADMIN" -> {}
@@ -95,7 +97,9 @@ public class IrcMessageProcessor {
             case "WHO" -> {
                 new WhoMessage(ircMessage, client).handle();
             }
-            case "WHOIS" -> {}
+            case "WHOIS" -> {
+                new WhoIsMessage(ircMessage, client).handle();
+            }
             case "WHOWAS" -> {}
 
             // 3.7 Misc. messages

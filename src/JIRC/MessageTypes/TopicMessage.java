@@ -66,14 +66,14 @@ public class TopicMessage extends BaseMessage {
         // set topic
         if (getChannel() == null) {
             String msg = ":{0} {1} {2} {3} :No such channel\r\n";
-            msg = MessageFormat.format(msg, server.IRC_HOSTNAME, Numerics.ERR_NOSUCHCHANNEL, client.nickname, getChannelStr());
+            msg = MessageFormat.format(msg, server.IRC_HOSTNAME, Numerics.ERR_NOSUCHCHANNEL, client.getNickname(), getChannelStr());
             client.sendMessage(msg);
             return;
         }
         if (isCheckingTopic()) {
             // server RPL_TOPIC channel
             String msg = ":{0} {1} {2} {3} :{4}\r\n";
-            msg = MessageFormat.format(msg, server.IRC_HOSTNAME, Numerics.RPL_TOPIC, client.nickname, getChannel().getName(), getChannel().getTopic());
+            msg = MessageFormat.format(msg, server.IRC_HOSTNAME, Numerics.RPL_TOPIC, client.getNickname(), getChannel().getName(), getChannel().getTopic());
             client.sendMessage(msg);
         }
 

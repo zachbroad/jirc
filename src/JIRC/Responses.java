@@ -1,6 +1,8 @@
 package JIRC;
 
 import java.text.MessageFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Responses {
 
@@ -14,8 +16,8 @@ public class Responses {
                         ":{0} {1} {2} :Welcome to the Internet Relay Network {2}!{3}@{0}\r\n",
                         IrcServer.instance.IRC_HOSTNAME, // 0
                         Numerics.RPL_YOURHOST, // 1
-                        client.nickname,
-                        client.username
+                        client.getNickname(),
+                        client.getUsername()
                 )
         );
     }
@@ -29,7 +31,7 @@ public class Responses {
                 ":{0} {1} {2} :Your host is {0}, running version {3}\r\n",
                 IrcServer.instance.IRC_HOSTNAME, // 0
                 Numerics.RPL_YOURHOST, // 1
-                client.nickname, // 2
+                client.getNickname(), // 2
                 IrcServer.instance.VERSION // 3
         ));
     }
@@ -43,7 +45,7 @@ public class Responses {
                 ":{0} {1} {2} :This server was created {3}\r\n",
                 IrcServer.instance.IRC_HOSTNAME, // 0
                 Numerics.RPL_CREATED, // 1
-                client.nickname, // 2
+                client.getNickname(), // 2
                 IrcServer.instance.dateTimeCreated.toString() // 3
         ));
     }
@@ -57,7 +59,7 @@ public class Responses {
                 ":{0} {1} {2} :{3} v1 NULL NULL\r\n",
                 IrcServer.instance.IRC_HOSTNAME, // 0
                 Numerics.RPL_MYINFO, // 1
-                client.nickname, // 2
+                client.getNickname(), // 2
                 IrcServer.instance.dateTimeCreated.toString(), // 3
                 IrcServer.instance.serverName // 4
         ));
@@ -74,9 +76,9 @@ public class Responses {
                 ":{0} {1} {2} {3} :{4}\r\n",
                 IrcServer.instance.IRC_HOSTNAME, // 0
                 Numerics.RPL_AWAY, // 1
-                client.nickname, // 2
-                awayClient.nickname,
-                awayClient.awayMessage
+                client.getNickname(), // 2
+                awayClient.getNickname(),
+                awayClient.getAwayMessage()
         ));
     }
 
@@ -89,7 +91,7 @@ public class Responses {
                 ":{0} {1} {2} :You are no longer marked as being away\r\n",
                 IrcServer.instance.IRC_HOSTNAME, // 0
                 Numerics.RPL_AWAY, // 1
-                client.nickname // 2
+                client.getNickname() // 2
         ));
     }
 
@@ -102,7 +104,7 @@ public class Responses {
                 ":{0} {1} {2} :You have been marked as being away\r\n",
                 IrcServer.instance.IRC_HOSTNAME, // 0
                 Numerics.RPL_AWAY, // 1
-                client.nickname // 2
+                client.getNickname() // 2
         ));
     }
 
@@ -116,7 +118,7 @@ public class Responses {
                 topicMsgPre,
                 IrcServer.instance.IRC_HOSTNAME,
                 Numerics.RPL_TOPIC,
-                client.nickname,
+                client.getNickname(),
                 channel.getName()
         );
         client.sendMessage(topicMsgPost);
@@ -132,7 +134,7 @@ public class Responses {
                 topicMsgPre,
                 IrcServer.instance.IRC_HOSTNAME,
                 Numerics.RPL_TOPIC,
-                client.nickname,
+                client.getNickname(),
                 channel.getName(),
                 channel.getTopic()
         );
@@ -150,7 +152,7 @@ public class Responses {
                 ":{0} {1} {2} :- {3} Message of the day - \r\n",
                 IrcServer.instance.IRC_HOSTNAME, // 0
                 Numerics.RPL_MOTDSTART, // 1
-                client.nickname, // 2
+                client.getNickname(), // 2
                 IrcServer.instance.serverName // 3
         ));
         for (String motdLine : IrcServer.instance.motd) {
@@ -158,7 +160,7 @@ public class Responses {
                     ":{0} {1} {2} :- {3}\r\n",
                     IrcServer.instance.IRC_HOSTNAME, // 0
                     Numerics.RPL_MOTD, // 1
-                    client.nickname, // 2
+                    client.getNickname(), // 2
                     motdLine // 3
             ));
         }
@@ -166,7 +168,7 @@ public class Responses {
                 ":{0} {1} {2} :End of MOTD command\r\n",
                 IrcServer.instance.IRC_HOSTNAME, // 0
                 Numerics.RPL_MOTDEND, // 1
-                client.nickname, // 2
+                client.getNickname(), // 2
                 IrcServer.instance.motd // 3
         ));
     }
@@ -180,7 +182,27 @@ public class Responses {
                 ":{0} {1} {2} :You are now an IRC operator\r\n",
                 IrcServer.instance.IRC_HOSTNAME, // 0
                 Numerics.RPL_YOUREOPER, // 1
-                client.nickname // 2
+                client.getNickname() // 2
+        ));
+    }
+
+    /**
+     * 391    RPL_TIME
+     * "<server> :<string showing server's local time>"
+     *
+     * - When replying to the TIME message, a server MUST send
+     * the reply using the RPL_TIME format above.  The string
+     * showing the time need only contain the correct day and
+     * time there.  There is no further requirement for the
+     * time string.
+     */
+    public static void sendTimeMessage(IrcClient client) {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss");
+        client.sendMessage(MessageFormat.format(
+                ":{0} {1} {0} :{2}\r\n",
+                IrcServer.instance.IRC_HOSTNAME, // 0
+                Numerics.RPL_TIME, // 1
+                dateTimeFormatter.format(LocalDateTime.now()) // 2
         ));
     }
 
@@ -214,7 +236,7 @@ public class Responses {
                 ":{0} {1} {2} {3} {4} :They aren''t on that channel\r\n",
                 IrcServer.instance.IRC_HOSTNAME,
                 Numerics.ERR_NOTONCHANNEL,
-                client.nickname,
+                client.getNickname(),
                 channelName,
                 targetName
         );
@@ -240,14 +262,14 @@ public class Responses {
 
     /**
      * 461 ERR_NEEDMOREPARAMS
-     * ec<command> :Not enough parameters"
+     * "<command> :Not enough parameters"
      */
     public static void errorNeedMoreParams(IrcClient client, String command) {
         client.sendMessage(MessageFormat.format(
                 ":{0} {1} {2} {3} :Not enough parameters\r\n",
                 IrcServer.instance.IRC_HOSTNAME, // 0
                 Numerics.ERR_NEEDMOREPARAMS, // 1
-                client.nickname, // 2
+                client.getNickname(), // 2
                 command
         ));
     }
@@ -262,7 +284,7 @@ public class Responses {
                 ":{0} {1} {2} :Password incorrect\r\n",
                 IrcServer.instance.IRC_HOSTNAME, // 0
                 Numerics.ERR_PASSWDMISMATCH, // 1
-                client.nickname // 2
+                client.getNickname() // 2
         ));
     }
 
@@ -275,7 +297,7 @@ public class Responses {
                 ":{0} {1} {2} {3} :Bad Channel Mask\r\n",
                 IrcServer.instance.IRC_HOSTNAME, // 0
                 Numerics.ERR_BADCHANMASK, // 1
-                client.nickname, // 2
+                client.getNickname(), // 2
                 channelBadMask // 3
         ));
     }
@@ -293,7 +315,7 @@ public class Responses {
                 ":{0} {1} {2} :Permission Denied- You''re not an IRC operator\r\n",
                 IrcServer.instance.IRC_HOSTNAME, // 0
                 Numerics.ERR_NOPRIVILEGES, // 1
-                client.nickname // 2
+                client.getNickname() // 2
         ));
     }
 
@@ -311,7 +333,7 @@ public class Responses {
                 ":{0} {1} {2} {3} :You''re not channel operator\r\n",
                 IrcServer.instance.IRC_HOSTNAME, // 0
                 Numerics.ERR_CHANOPRIVSNEEDED, // 1
-                client.nickname, // 2
+                client.getNickname(), // 2
                 channel
         ));
     }
@@ -329,7 +351,7 @@ public class Responses {
                 ":{0} {1} {2} :You can''t kill a server!\r\n",
                 IrcServer.instance.IRC_HOSTNAME, // 0
                 Numerics.ERR_CANTKILLSERVER, // 1
-                client.nickname // 2
+                client.getNickname() // 2
         ));
     }
 
@@ -345,7 +367,7 @@ public class Responses {
                 ":{0} {1} {2} :Your connection is restricted!\r\n",
                 IrcServer.instance.IRC_HOSTNAME, // 0
                 Numerics.ERR_RESTRICTED, // 1
-                client.nickname // 2
+                client.getNickname() // 2
         ));
     }
 
@@ -362,7 +384,7 @@ public class Responses {
                 ":{0} {1} {2} :You''re not the original channel operator\r\n",
                 IrcServer.instance.IRC_HOSTNAME, // 0
                 Numerics.ERR_UNIQOPPRIVSNEEDED, // 1
-                client.nickname // 2
+                client.getNickname() // 2
         ));
     }
 
@@ -380,7 +402,7 @@ public class Responses {
                 ":{0} {1} {2} :No O-lines for your host\r\n",
                 IrcServer.instance.IRC_HOSTNAME, // 0
                 Numerics.ERR_NOOPERHOST, // 1
-                client.nickname // 2
+                client.getNickname() // 2
         ));
     }
 

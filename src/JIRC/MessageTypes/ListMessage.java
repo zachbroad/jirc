@@ -27,7 +27,7 @@ public class ListMessage extends BaseMessage {
                             ":{0} {1} {2} {3} {4} :{5}\r\n",
                             IrcServer.instance.IRC_HOSTNAME, // 0
                             Numerics.RPL_LIST, // 1
-                            client.nickname, // 2
+                            client.getNickname(), // 2
                             channel.getName(), // 3
                             channel.getClients().size(), // 4
                             channel.getTopic() // 5
@@ -40,7 +40,7 @@ public class ListMessage extends BaseMessage {
                         ":{0} {1} {2} :End of LIST\r\n",
                         IrcServer.instance.IRC_HOSTNAME, // 0
                         Numerics.RPL_LISTEND, // 1
-                        client.nickname // 2
+                        client.getNickname() // 2
                 ), client
         );
     }
