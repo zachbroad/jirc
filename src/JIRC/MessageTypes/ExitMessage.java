@@ -8,14 +8,14 @@ import java.text.MessageFormat;
 
 public class ExitMessage extends BaseMessage {
 
-    public ExitMessage(IrcMessage message, IrcClient client) {
-        super(message, client);
+    public ExitMessage(IrcMessage message, IrcClient sender) {
+        super(message, sender);
     }
 
     @Override
     public void handle() {
-        IrcServer.logger.info(MessageFormat.format("Client {0} disconnected", client.toString()));
-        IrcServer.instance.clientManager.removeClient(client);
+        IrcServer.logger.info(MessageFormat.format("Client {0} disconnected", sender.toString()));
+        IrcServer.instance.clientManager.removeClient(sender);
     }
 
 }

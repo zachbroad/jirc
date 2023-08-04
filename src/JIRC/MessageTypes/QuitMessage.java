@@ -8,8 +8,8 @@ import java.text.MessageFormat;
 
 public class QuitMessage extends BaseMessage {
 
-    public QuitMessage(IrcMessage message, IrcClient client) {
-        super(message, client);
+    public QuitMessage(IrcMessage message, IrcClient sender) {
+        super(message, sender);
     }
 
     public String getQuitMessage() {
@@ -27,12 +27,12 @@ public class QuitMessage extends BaseMessage {
          */
         String formattedMessage = MessageFormat.format(
                 ":{0} QUIT :{1}\r\n",
-                client.getPrefix(), // todo: is it nickname or username
+                sender.getPrefix(), // todo: is it nickname or username
                 getQuitMessage()
         );
         IrcServer.instance.broadcastMessage(formattedMessage);
 
         // disconnect the user
-        IrcServer.instance.clientManager.removeClient(client);
+        IrcServer.instance.clientManager.removeClient(sender);
     }
 }

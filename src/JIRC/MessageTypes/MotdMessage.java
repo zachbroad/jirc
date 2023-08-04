@@ -2,15 +2,13 @@ package JIRC.MessageTypes;
 
 import JIRC.*;
 
-import java.text.MessageFormat;
-
 public class MotdMessage extends BaseMessage {
-    public MotdMessage(IrcMessage message, IrcClient client) {
-        super(message, client);
+    public MotdMessage(IrcMessage message, IrcClient sender) {
+        super(message, sender);
     }
 
     @Override
     public void handle() {
-        Responses.sendMotdMessage(client);
+        Responses.sendMotdMessage(sender);
     }
 }

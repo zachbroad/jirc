@@ -6,8 +6,8 @@ import java.text.MessageFormat;
 
 public class WhoMessage extends BaseMessage {
 
-    public WhoMessage(IrcMessage message, IrcClient client) {
-        super(message, client);
+    public WhoMessage(IrcMessage message, IrcClient sender) {
+        super(message, sender);
     }
 
     public String getChannel() {
@@ -22,7 +22,7 @@ public class WhoMessage extends BaseMessage {
         IrcChannel channelObj = server.channelManager.getChannelByName(getChannel());
 
         if (channelObj == null) {
-            client.sendMessage(
+            sender.sendMessage(
                     MessageFormat.format(
                             ":{0} {1}\r\n",
                             server.getPrefix(),
@@ -33,12 +33,12 @@ public class WhoMessage extends BaseMessage {
         }
 
         for (var c : channelObj.getClients()) {
-            client.sendMessage(
+            sender.sendMessage(
                     MessageFormat.format(
                             ":{0} {1} {2} {3} {4} {5} {6} H :0 {7}\r\n",
                             server.IRC_HOSTNAME, // 0
                             Numerics.RPL_WHOREPLY, // 1
-                            client.getUsername(), // 2
+                            sender.getUsername(), // 2
                             channelObj.getName(), // 3
                             c.getUsername(), //4
                             c.getIpAddress(), //5
@@ -52,8 +52,8 @@ public class WhoMessage extends BaseMessage {
                         ":{0} {1} {2} :End of WHO list\r\n",
                         server.IRC_HOSTNAME, // 0
                         Numerics.RPL_ENDOFWHO, // 1
-                        client.getNickname() // 2
-                ), client
+                        sender.getNickname() // 2
+                ), sender
         );
     }
 }

@@ -8,8 +8,8 @@ import java.text.MessageFormat;
 
 public class NickMessage extends BaseMessage {
 
-    public NickMessage(IrcMessage message, IrcClient client) {
-        super(message, client);
+    public NickMessage(IrcMessage message, IrcClient sender) {
+        super(message, sender);
     }
 
     public String getNickname() {
@@ -18,15 +18,15 @@ public class NickMessage extends BaseMessage {
 
     @Override
     public void handle() {
-        String oldName = client.getNickname(); // store old
-        client.setNickname(getNickname());
+        String oldName = sender.getNickname(); // store old
+        sender.setNickname(getNickname());
         IrcServer.instance.broadcastMessage(MessageFormat.format(
                 ":{0} NICK {2}\r\n",
                 oldName,
                 IrcServer.instance.IRC_HOSTNAME,
-                client.getNickname()
+                sender.getNickname()
         ));
 
-        IrcServer.logger.info("Client %s sent nickname: %s".formatted(client.toString(), client.getNickname()));
+        IrcServer.logger.info("Client %s sent nickname: %s".formatted(sender.toString(), sender.getNickname()));
     }
 }

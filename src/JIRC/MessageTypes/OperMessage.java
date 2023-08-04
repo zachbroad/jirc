@@ -7,8 +7,8 @@ import JIRC.Responses;
 
 public class OperMessage extends BaseMessage {
 
-    public OperMessage(IrcMessage message, IrcClient client) {
-        super(message, client);
+    public OperMessage(IrcMessage message, IrcClient sender) {
+        super(message, sender);
     }
 
     public String getUsername() {
@@ -27,18 +27,18 @@ public class OperMessage extends BaseMessage {
          */
 
         if (getUsername() == null || getPassword() == null) {
-            Responses.errorNeedMoreParams(client, "OPER");
+            Responses.errorNeedMoreParams(sender, "OPER");
         }
 
         if (IrcOperator.isValidUsername(getUsername())) {
             if (IrcOperator.tryLogin(getUsername(), getPassword())) {
-                client.giveOperatorPerms();
-                Responses.sendOperYoureOper(client);
+                sender.giveOperatorPerms();
+                Responses.sendOperYoureOper(sender);
             } else {
-                Responses.errorPasswordMismatch(client);
+                Responses.errorPasswordMismatch(sender);
             }
         } else {
-            Responses.errorPasswordMismatch(client);
+            Responses.errorPasswordMismatch(sender);
         }
     }
 }

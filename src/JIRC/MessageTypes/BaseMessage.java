@@ -7,12 +7,12 @@ import JIRC.IrcServer;
 public abstract class BaseMessage {
 
     IrcMessage message = null;
-    IrcClient client = null;
+    IrcClient sender = null;
     static IrcServer server = IrcServer.instance;
 
-    public BaseMessage(IrcMessage message, IrcClient client) {
+    public BaseMessage(IrcMessage message, IrcClient sender) {
         this.message = message;
-        this.client = client;
+        this.sender = sender;
     }
 
     public abstract void handle();

@@ -8,8 +8,8 @@ public class KillMessage extends BaseMessage {
     private String nickname;
     private String comment;
 
-    public KillMessage(IrcMessage message, IrcClient client) {
-        super(message, client);
+    public KillMessage(IrcMessage message, IrcClient sender) {
+        super(message, sender);
         nickname = message.getParams().size() > 0 ? message.getParams().get(0) : null;
         comment = message.getParams().size() > 1 ? message.getParams().get(1) : null;
     }
@@ -25,12 +25,12 @@ public class KillMessage extends BaseMessage {
 
     @Override
     public void handle() {
-        if (!client.isOperator()) {
-            Responses.errorNoPrivileges(client);
+        if (!sender.isOperator()) {
+            Responses.errorNoPrivileges(sender);
         }
 
         if (!isValid()) {
-            Responses.errorNeedMoreParams(client, "KILL");
+            Responses.errorNeedMoreParams(sender, "KILL");
         }
 
 

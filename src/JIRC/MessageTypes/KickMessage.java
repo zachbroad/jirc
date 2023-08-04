@@ -6,8 +6,8 @@ import java.text.MessageFormat;
 
 public class KickMessage extends BaseMessage {
 
-    public KickMessage(IrcMessage message, IrcClient client) {
-        super(message, client);
+    public KickMessage(IrcMessage message, IrcClient sender) {
+        super(message, sender);
     }
 
     public String getChannel() {
@@ -40,19 +40,18 @@ public class KickMessage extends BaseMessage {
 
     @Override
     public void handle() {
-        if (!client.isOperator()) {
-            Responses.errorChanoPrivsNeeded(client, getChannel());
+        if (!sender.isOperator()) {
+            Responses.errorChanoPrivsNeeded(sender, getChannel());
             return;
         }
 
         if (!hasEnoughParams()) {
-            Responses.errorNeedMoreParams(client, "KICK");
+            Responses.errorNeedMoreParams(sender, "KICK");
             return;
         }
 
         IrcChannel channel = getChannelObj();
         IrcClient clientToKick = getClientObj();
-        IrcClient sender = client;
 
         /* First, let's make sure the channel exists, otherwise ERR_BADCHANMASK
          * The sender needs to be in the channel, otherwise ERR_NOTONCHANNEL
@@ -61,16 +60,16 @@ public class KickMessage extends BaseMessage {
 
 
         if (channel == null) {
-            Responses.errorBadChanMask(client, getChannel());
+            Responses.errorBadChanMask(sender, getChannel());
             return;
         }
 
         if (!channel.hasClient(sender)) {
-            Responses.errorNotOnChannel(client, getChannel());
+            Responses.errorNotOnChannel(sender, getChannel());
         }
 
         if (clientToKick == null) {
-            Responses.errorUserNotInChannel(client, getUser(), getChannel());
+            Responses.errorUserNotInChannel(sender, getUser(), getChannel());
             return;
         }
 
@@ -79,7 +78,7 @@ public class KickMessage extends BaseMessage {
                 channel.sendMessageToClients(
                         MessageFormat.format(
                                 ":{0} KICK {1} {2} :{3}\r\n",
-                                client.getPrefix(), // 0
+                                sender.getPrefix(), // 0
                                 getChannel(), // 1
                                 clientToKick.getNickname(), // 2
                                 getMessage() // 3
@@ -89,15 +88,15 @@ public class KickMessage extends BaseMessage {
                 channel.sendMessageToClients(
                         MessageFormat.format(
                                 ":{0} KICK {1} {2}\r\n",
-                                client.getPrefix(), // 0
+                                sender.getPrefix(), // 0
                                 getChannel(), // 1
                                 clientToKick.getNickname() // 2
                         )
                 );
             }
-            client.leaveChannel(channel);
+            sender.leaveChannel(channel);
         } else {
-            Responses.errorUserNotInChannel(client, getUser(), getChannel());
+            Responses.errorUserNotInChannel(sender, getUser(), getChannel());
         }
 
 

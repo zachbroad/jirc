@@ -6,8 +6,8 @@ import java.text.MessageFormat;
 
 public class ListMessage extends BaseMessage {
 
-    public ListMessage(IrcMessage message, IrcClient client) {
-        super(message, client);
+    public ListMessage(IrcMessage message, IrcClient sender) {
+        super(message, sender);
     }
 
     /**
@@ -20,6 +20,7 @@ public class ListMessage extends BaseMessage {
      */
     @Override
     public void handle() {
+        //TODO: HANDLE ERR_TOOMANYMATCHES
         for (IrcChannel channel : IrcServer.instance.channelManager.channels) {
             System.out.println("h");
             IrcServer.instance.sendMessageToClient(
@@ -27,11 +28,11 @@ public class ListMessage extends BaseMessage {
                             ":{0} {1} {2} {3} {4} :{5}\r\n",
                             IrcServer.instance.IRC_HOSTNAME, // 0
                             Numerics.RPL_LIST, // 1
-                            client.getNickname(), // 2
+                            sender.getNickname(), // 2
                             channel.getName(), // 3
                             channel.getClients().size(), // 4
                             channel.getTopic() // 5
-                    ), client
+                    ), sender
             );
         }
 
@@ -40,8 +41,8 @@ public class ListMessage extends BaseMessage {
                         ":{0} {1} {2} :End of LIST\r\n",
                         IrcServer.instance.IRC_HOSTNAME, // 0
                         Numerics.RPL_LISTEND, // 1
-                        client.getNickname() // 2
-                ), client
+                        sender.getNickname() // 2
+                ), sender
         );
     }
 }

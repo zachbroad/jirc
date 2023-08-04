@@ -2,6 +2,8 @@ package JIRC;
 
 import JIRC.MessageTypes.*;
 
+import java.util.HashMap;
+
 
 /*
     Most of the messages sent to the server generate a reply of some
@@ -17,6 +19,7 @@ import JIRC.MessageTypes.*;
 
 
 public class IrcMessageProcessor {
+
     /**
      * Parse message & handle it
      * TODO: move message cases to their own files
@@ -112,7 +115,12 @@ public class IrcMessageProcessor {
             }
             case "ERROR" -> {}
             // 4 Optional features
-            case "AWAY" -> {}
+            case "AWAY" -> {
+                new AwayMessage(ircMessage, client).handle();
+            }
+            case "BACK" -> {
+                new AwayMessage(new IrcMessage("BACK"), client).handle();
+            }
             case "REHASH" -> {}
             default -> {}
         }

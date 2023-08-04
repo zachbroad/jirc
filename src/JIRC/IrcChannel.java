@@ -1,6 +1,7 @@
 package JIRC;
 
 import java.util.ArrayList;
+import java.util.stream.Stream;
 
 public class IrcChannel {
     private String name;
@@ -15,10 +16,21 @@ public class IrcChannel {
         this.setTopic(topic);
     }
 
+    public static boolean isValidChannelName(String str) {
+        return Stream.of("&", "#", "+", "!").anyMatch(str::startsWith);
+    }
+
+    public static boolean isValidChannelLength(String str) {
+        return str.length() <= 50;
+    }
 
     @Override
     public String toString() {
         return "%s - %s".formatted(name, topic);
+    }
+
+    public boolean isValid() {
+        return isValidChannelName(this.name) && isValidChannelLength(this.name);
     }
 
     /**
@@ -27,8 +39,20 @@ public class IrcChannel {
      * @param message raw message to send
      */
     public void sendMessageToClients(String message) {
+        sendMessageToClients(message, null);
+    }
+
+    /**
+     * Sends message to all clients except the one specified by ignore
+     *
+     * @param message raw message to send
+     * @param ignore  client to ignore
+     */
+    public void sendMessageToClients(String message, IrcClient ignore) {
         for (IrcClient client : connectedClients) {
-            client.sendMessage(message);
+            if (client != ignore) {
+                client.sendMessage(message);
+            }
         }
     }
 
@@ -56,6 +80,7 @@ public class IrcChannel {
     /**
      * Remove client from client connected list
      * Not used to remove the client itself, use client.leaveChannel()
+     *
      * @param client to remove
      */
     public void removeClientFromConnected(IrcClient client) {
@@ -84,7 +109,11 @@ public class IrcChannel {
     }
 
     public void setName(String name) {
-        this.name = name;
+        if (!isValidChannelLength(name)) {
+            this.name = name.substring(0, 49);
+        } else {
+            this.name = name;
+        }
     }
 
     public String getTopic() {

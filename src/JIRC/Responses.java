@@ -90,7 +90,7 @@ public class Responses {
         client.sendMessage(MessageFormat.format(
                 ":{0} {1} {2} :You are no longer marked as being away\r\n",
                 IrcServer.instance.IRC_HOSTNAME, // 0
-                Numerics.RPL_AWAY, // 1
+                Numerics.RPL_UNAWAY, // 1
                 client.getNickname() // 2
         ));
     }
@@ -99,11 +99,11 @@ public class Responses {
      * 306 RPL_NOWAWAY
      * "You have been marked as being away"
      */
-    public static void sendAwayMessage(IrcClient client) {
+    public static void sendNowAwayMessage(IrcClient client) {
         client.sendMessage(MessageFormat.format(
                 ":{0} {1} {2} :You have been marked as being away\r\n",
                 IrcServer.instance.IRC_HOSTNAME, // 0
-                Numerics.RPL_AWAY, // 1
+                Numerics.RPL_NOWAWAY, // 1
                 client.getNickname() // 2
         ));
     }
@@ -189,7 +189,7 @@ public class Responses {
     /**
      * 391    RPL_TIME
      * "<server> :<string showing server's local time>"
-     *
+     * <p>
      * - When replying to the TIME message, a server MUST send
      * the reply using the RPL_TIME format above.  The string
      * showing the time need only contain the correct day and
@@ -212,17 +212,31 @@ public class Responses {
      ****************************************************************************/
 
     /**
+     * ERR_NOSUCHNICK
+     * "<nickname> :No such nick/channel"
+     */
+    public static void errorNoSuchNick(IrcClient client, String nickname) {
+        String message = MessageFormat.format(
+                ":{0} {1} {2} :No such nickname\r\n",
+                IrcServer.instance.IRC_HOSTNAME,
+                Numerics.ERR_NOSUCHNICK,
+                nickname
+        );
+        client.sendMessage(message);
+    }
+
+    /**
      * 403 ERR_NOSUCHCHANNEL
      * "<channel name> :No such channel"
      */
     public static void errorNoSuchChannel(IrcClient client, String channelName) {
-        String postFormat = MessageFormat.format(
+        String message = MessageFormat.format(
                 ":{0} {1} {2} :No such channel\r\n",
                 IrcServer.instance.IRC_HOSTNAME,
                 Numerics.ERR_NOSUCHCHANNEL,
                 channelName
         );
-        client.sendMessage(postFormat);
+        client.sendMessage(message);
     }
 
     /**
@@ -232,7 +246,7 @@ public class Responses {
      * user of the command is not on the given channel.
      */
     public static void errorUserNotInChannel(IrcClient client, String targetName, String channelName) {
-        String postFormat = MessageFormat.format(
+        String message = MessageFormat.format(
                 ":{0} {1} {2} {3} {4} :They aren''t on that channel\r\n",
                 IrcServer.instance.IRC_HOSTNAME,
                 Numerics.ERR_NOTONCHANNEL,
@@ -240,7 +254,7 @@ public class Responses {
                 channelName,
                 targetName
         );
-        client.sendMessage(postFormat);
+        client.sendMessage(message);
     }
 
     /**
@@ -255,6 +269,21 @@ public class Responses {
                 ":{0} {1} {2} :You''re not on that channel\r\n",
                 IrcServer.instance.IRC_HOSTNAME,
                 Numerics.ERR_NOTONCHANNEL,
+                channelName
+        );
+        client.sendMessage(postFormat);
+    }
+
+    /**
+     * 443 ERR_USERONCHANNEL
+     * "<user> <channel> :is already on channel"
+     */
+    public static void errorUserOnChannel(IrcClient client, String username, String channelName) {
+        String postFormat = MessageFormat.format(
+                ":{0} {1} {2} {3} :is already on channel\r\n",
+                IrcServer.instance.IRC_HOSTNAME,
+                Numerics.ERR_USERONCHANNEL,
+                username,
                 channelName
         );
         client.sendMessage(postFormat);

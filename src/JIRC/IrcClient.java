@@ -14,6 +14,7 @@ public class IrcClient {
     private String username;
     private String realname;
     private String awayMessage;
+    private boolean away;
     private Socket socket;
     private Channel channel;
     private String ipAddress;
@@ -46,6 +47,7 @@ public class IrcClient {
     }
 
     public boolean isOperator() {
+        // TODO: CHANNEL OPERATORS
         return this.operator;
     }
 
@@ -185,6 +187,14 @@ public class IrcClient {
 
     public void setAwayMessage(String awayMessage) {
         this.awayMessage = awayMessage;
+    }
+
+    public boolean isAway() {
+        return this.away;
+    }
+
+    public void setAway(boolean status) {
+        this.away = status;
     }
 
     public Socket getSocket() {

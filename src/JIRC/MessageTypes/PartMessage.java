@@ -8,8 +8,8 @@ import JIRC.IrcServer;
 import java.text.MessageFormat;
 
 public class PartMessage extends BaseMessage {
-    public PartMessage(IrcMessage message, IrcClient client) {
-        super(message, client);
+    public PartMessage(IrcMessage message, IrcClient sender) {
+        super(message, sender);
     }
 
 
@@ -28,11 +28,11 @@ public class PartMessage extends BaseMessage {
         IrcChannel channel = IrcServer.instance.channelManager.getChannelByName(getChannel());
 
         if (channel == null) {
-            IrcServer.logger.info("User [%s] PART failed - can't find channel by name %s".formatted(client.toString(), channel.toString()));
+            IrcServer.logger.info("User [%s] PART failed - can't find channel by name %s".formatted(sender.toString(), channel.toString()));
             return;
         }
 
-        client.leaveChannel(channel);
+        sender.leaveChannel(channel);
 
         /*
          * 0 - client identifier
@@ -40,7 +40,7 @@ public class PartMessage extends BaseMessage {
          * 2 - leave message
          */
         String preFormat = ":{0} PART {1} :{2}\r\n";
-        String postFormat = MessageFormat.format(preFormat, client.getPrefix(), getChannel(), getLeaveMessage());
+        String postFormat = MessageFormat.format(preFormat, sender.getPrefix(), getChannel(), getLeaveMessage());
         channel.sendMessageToClients(postFormat);
         IrcServer.instance.broadcastMessage(postFormat);
     }

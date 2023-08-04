@@ -16,6 +16,9 @@ public class Numerics {
     // AWAY
     public static final int RPL_AWAY = 301; // "<nick> :<away message>"
 
+    public static final int RPL_UNAWAY = 305; // ":You are no longer marked as being away"
+    public static final int RPL_NOWAWAY = 306; // ":You have been marked as being away"
+
     // List Channels
     public static final int RPL_LISTSTART = 321; // obsolete
     public static final int RPL_LIST = 322;
@@ -46,6 +49,7 @@ public class Numerics {
     public static final int ERR_CANNOTSENDTOCHAN = 404;
     public static final int ERR_USERNOTINCHANNEL = 441; // "<nick> <channel> :You're not on that channel"
     public static final int ERR_NOTONCHANNEL = 442; // "<channel> :You're not on that channel"
+    public static final int ERR_USERONCHANNEL = 443; // "<user> <channel> :is already on channel"
     public static final int ERR_NEEDMOREPARAMS = 461; //  "<command> :Not enough parameters"
     public static final int ERR_NOPERMFORHOST = 463; //  ":Your host isn't among the privileged"
     public static final int ERR_PASSWDMISMATCH = 464; //  ":Password incorrect"

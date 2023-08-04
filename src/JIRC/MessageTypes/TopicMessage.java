@@ -40,41 +40,41 @@ TOPIC #test                     ; Command to check the topic for
 
 public class TopicMessage extends BaseMessage {
 
-    public TopicMessage(IrcMessage message, IrcClient client) {
-        super(message, client);
-    }
+    private final IrcChannel channel;
+    private final String topic;
+    private final String channelName;
 
-    String getChannelStr() {
-        return message.getParams().get(0);
-    }
-
-    IrcChannel getChannel() {
-        return IrcServer.instance.channelManager.getChannelByName(getChannelStr());
-    }
-
-    String getTopic() {
-        return message.getParams().get(1);
+    public TopicMessage(IrcMessage message, IrcClient sender) {
+        super(message, sender);
+        topic = message.getParams().size() > 1 ? message.getParams().get(1) : null;
+        channelName = message.getParams().size() > 0 ? message.getParams().get(0) : null;
+        channel = IrcServer.instance.channelManager.getChannelByName(channelName);
     }
 
     boolean isCheckingTopic() {
-        return !message.raw.contains(":");
+        return topic == null;
     }
 
 
     @Override
     public void handle() {
         // set topic
-        if (getChannel() == null) {
+        if (channelName == null) {
             String msg = ":{0} {1} {2} {3} :No such channel\r\n";
-            msg = MessageFormat.format(msg, server.IRC_HOSTNAME, Numerics.ERR_NOSUCHCHANNEL, client.getNickname(), getChannelStr());
-            client.sendMessage(msg);
+            msg = MessageFormat.format(msg, server.IRC_HOSTNAME, Numerics.ERR_NOSUCHCHANNEL, sender.getNickname(), channelName);
+            sender.sendMessage(msg);
             return;
         }
         if (isCheckingTopic()) {
             // server RPL_TOPIC channel
             String msg = ":{0} {1} {2} {3} :{4}\r\n";
-            msg = MessageFormat.format(msg, server.IRC_HOSTNAME, Numerics.RPL_TOPIC, client.getNickname(), getChannel().getName(), getChannel().getTopic());
-            client.sendMessage(msg);
+            msg = MessageFormat.format(msg, server.IRC_HOSTNAME, Numerics.RPL_TOPIC, sender.getNickname(), channel.getName(), channel.getTopic());
+            sender.sendMessage(msg);
+        } else {
+            channel.setTopic(topic);
+            String msg = ":{0} TOPIC {1} :{2}\r\n";
+            msg = MessageFormat.format(msg, sender.getPrefix(), channelName, topic);
+            IrcServer.instance.broadcastMessage(msg);
         }
 
         // is topic blank / user want to clear?

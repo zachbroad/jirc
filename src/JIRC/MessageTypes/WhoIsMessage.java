@@ -8,8 +8,8 @@ public class WhoIsMessage extends BaseMessage {
     private String target;
     private String nickname;
 
-    public WhoIsMessage(IrcMessage message, IrcClient client) {
-        super(message, client);
+    public WhoIsMessage(IrcMessage message, IrcClient sender) {
+        super(message, sender);
         target = message.getParams().size() > 0 ? message.getParams().get(0) : null;
         nickname = message.getParams().size() > 1 ? message.getParams().get(1) : null;
 

@@ -7,8 +7,8 @@ import java.text.MessageFormat;
 
 public class UserMessage extends BaseMessage {
 
-    public UserMessage(IrcMessage message, IrcClient client) {
-        super(message, client);
+    public UserMessage(IrcMessage message, IrcClient sender) {
+        super(message, sender);
     }
 
     public String getUsername() {
@@ -35,12 +35,12 @@ public class UserMessage extends BaseMessage {
 
     @Override
     public void handle() {
-        IrcServer.logger.info(MessageFormat.format("Client {0} wants to register", client.toString()));
+        IrcServer.logger.info(MessageFormat.format("Client {0} wants to register", sender.toString()));
         IrcServer.logger.info(MessageFormat.format("Got username {0}", getUsername()));
         IrcServer.logger.info(MessageFormat.format("Got realname {0}", getRealname()));
-        client.setUsername(getUsername());
-        client.setRealname(getRealname());
+        sender.setUsername(getUsername());
+        sender.setRealname(getRealname());
 
-        sendWelcomeMessage(client);
+        sendWelcomeMessage(sender);
     }
 }

@@ -2,14 +2,13 @@ package JIRC.MessageTypes;
 
 import JIRC.IrcClient;
 import JIRC.IrcMessage;
-import JIRC.IrcServer;
 
 import java.util.List;
 
 public class JoinMessage extends BaseMessage {
 
-    public JoinMessage(IrcMessage message, IrcClient client) {
-        super(message, client);
+    public JoinMessage(IrcMessage message, IrcClient sender) {
+        super(message, sender);
     }
 
     public List<String> getChannels() {
@@ -19,7 +18,7 @@ public class JoinMessage extends BaseMessage {
     @Override
     public void handle() {
         for (String channelName : getChannels()) {
-            client.attemptJoinChannelByName(channelName);
+            sender.attemptJoinChannelByName(channelName);
         }
     }
 }

@@ -78,6 +78,7 @@ public class IrcServer {
 
     String readFromClient(IrcClient client) {
         if (!client.getSocket().isConnected()) return null;
+
         try {
             SocketChannel channel = client.getSocket().getChannel();
             ByteBuffer buffer = ByteBuffer.allocate(512);
@@ -141,16 +142,18 @@ public class IrcServer {
             return;
         }
 
-        try {
-            BufferedOutputStream outputStream = new BufferedOutputStream(client.getSocket().getOutputStream());
+        new Thread(() -> {
+            try {
+                BufferedOutputStream outputStream = new BufferedOutputStream(client.getSocket().getOutputStream());
 //            outputStream.write(message.getBytes(StandardCharsets.UTF_8));
-            for (char c : message.toCharArray()) {
-                outputStream.write(c);
+                for (char c : message.toCharArray()) {
+                    outputStream.write(c);
+                }
+                outputStream.flush();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
-            outputStream.flush();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        }).start();
     }
 
 
