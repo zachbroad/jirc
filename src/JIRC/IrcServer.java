@@ -97,6 +97,7 @@ public class IrcServer {
 
         } catch (IOException e) {
             e.printStackTrace();
+            clientManager.removeClient(client);
         }
 
         return null;
@@ -133,12 +134,12 @@ public class IrcServer {
      */
     public void sendMessageToClient(String message, IrcClient client) {
         if (message.length() > 512) {
-            IrcServer.logger.warning("Message from %s >512 characters!".formatted(client.getPrefix()));
+            IrcServer.logger.warning("Message from %s >512 characters!".formatted(client.getMask()));
             return;
         }
 
         if (!client.getSocket().isConnected()) {
-            IrcServer.logger.warning("Client %s socket not connected.".formatted(client.getPrefix()));
+            IrcServer.logger.warning("Client %s socket not connected.".formatted(client.getMask()));
             return;
         }
 

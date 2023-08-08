@@ -21,6 +21,7 @@ public class MessageTests {
         client.setNickname("zach");
         client.setUsername("zachy64");
         client.setRealname("Zachary Broad");
+        server.channelManager.addChannel(new IrcChannel("#channel", "Topic"));
     }
 
     // TODO: Figure out how to test this
@@ -123,7 +124,7 @@ public class MessageTests {
     void testWhoMessage() {
         IrcMessage message = new IrcMessage("WHO #channel");
         WhoMessage whoMessage = new WhoMessage(message, client);
-        assertEquals(whoMessage.getChannel(), "#channel");
+        assertEquals(whoMessage.getChannelName(), "#channel");
     }
 
     @Test
@@ -133,6 +134,24 @@ public class MessageTests {
         assertEquals(kickMessage.getChannel(), "#channel");
         assertEquals(kickMessage.getUser(), "zach");
         assertEquals(kickMessage.getMessage(), "test");
+    }
+
+    @Test
+    void testNamesMessage() {
+        IrcMessage message = new IrcMessage("NAMES #channel");
+        NamesMessage namesMessage = new NamesMessage(message, client);
+        assertEquals(namesMessage.wantsToGetAll(), false);
+        assertEquals(namesMessage.anyValidChannels(), true);
+
+        message = new IrcMessage("NAMES");
+        namesMessage = new NamesMessage(message, client);
+        assertEquals(namesMessage.wantsToGetAll(), true);
+        assertEquals(namesMessage.anyValidChannels(), false);
+
+        message = new IrcMessage("NAMES #invalidchan");
+        namesMessage = new NamesMessage(message, client);
+        assertEquals(namesMessage.wantsToGetAll(), false);
+        assertEquals(namesMessage.anyValidChannels(), false);
     }
 
 }

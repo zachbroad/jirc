@@ -23,6 +23,7 @@ public class Numerics {
     public static final int RPL_LISTSTART = 321; // obsolete
     public static final int RPL_LIST = 322;
     public static final int RPL_LISTEND = 323;
+    public static final int RPL_CHANNELMODEIS = 324; // "<channel> <mode> <mode params>"
 
     // Topics
     public static final int RPL_NOTOPIC = 331;
@@ -32,6 +33,11 @@ public class Numerics {
     // WHO
     public static final int RPL_WHOREPLY = 352;
     public static final int RPL_ENDOFWHO = 315;
+
+    // NAME
+    public static final int RPL_NAMREPLY = 353;
+    public static final int RPL_ENDOFNAMES = 366; // "<channel> :End of NAMES list"
+
     // MOTD
     public static final int RPL_MOTDSTART = 375;
     public static final int RPL_MOTD = 372;

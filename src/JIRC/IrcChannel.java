@@ -8,6 +8,8 @@ public class IrcChannel {
     private String topic;
     private ArrayList<IrcClient> connectedClients = new ArrayList<>();
     private int maxCapacity;
+    private boolean secret;
+    private boolean priv;
 
     public IrcChannel() {}
 
@@ -26,7 +28,7 @@ public class IrcChannel {
 
     @Override
     public String toString() {
-        return "%s - %s".formatted(name, topic);
+        return "'%s [%s]'".formatted(name, topic);
     }
 
     public boolean isValid() {
@@ -130,5 +132,22 @@ public class IrcChannel {
 
     public int getMaxCapacity() {
         return maxCapacity;
+    }
+
+    public boolean isSecret() {
+        return this.secret;
+    }
+
+    public boolean isPrivate() {
+        return this.priv;
+    }
+
+    public String getNameWithType() {
+        String prefix;
+        if (secret) prefix = "@";
+        else if (priv) prefix = "@";
+        else prefix = "=";
+
+        return prefix + " " + name;
     }
 }

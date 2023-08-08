@@ -66,11 +66,15 @@ public class IrcMessageProcessor {
             case "PART" -> {
                 new PartMessage(ircMessage, client).handle();
             }
-            case "MODE" -> {}
+            case "MODE" -> {
+                new ModeMessage(ircMessage, client).handle();
+            }
             case "TOPIC" -> {
                 new TopicMessage(ircMessage, client).handle();
             }
-            case "NAMES" -> {}
+            case "NAMES" -> {
+                new NamesMessage(ircMessage, client).handle();
+            }
             case "LIST" -> {
                 new ListMessage(ircMessage, client).handle();
             }

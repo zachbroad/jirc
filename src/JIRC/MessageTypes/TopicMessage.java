@@ -73,7 +73,7 @@ public class TopicMessage extends BaseMessage {
         } else {
             channel.setTopic(topic);
             String msg = ":{0} TOPIC {1} :{2}\r\n";
-            msg = MessageFormat.format(msg, sender.getPrefix(), channelName, topic);
+            msg = MessageFormat.format(msg, sender.getMask(), channelName, topic);
             IrcServer.instance.broadcastMessage(msg);
         }
 

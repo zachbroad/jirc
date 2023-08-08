@@ -27,7 +27,7 @@ public class QuitMessage extends BaseMessage {
          */
         String formattedMessage = MessageFormat.format(
                 ":{0} QUIT :{1}\r\n",
-                sender.getPrefix(), // todo: is it nickname or username
+                sender.getMask(), // todo: is it nickname or username
                 getQuitMessage()
         );
         IrcServer.instance.broadcastMessage(formattedMessage);

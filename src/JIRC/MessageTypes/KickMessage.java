@@ -78,7 +78,7 @@ public class KickMessage extends BaseMessage {
                 channel.sendMessageToClients(
                         MessageFormat.format(
                                 ":{0} KICK {1} {2} :{3}\r\n",
-                                sender.getPrefix(), // 0
+                                sender.getMask(), // 0
                                 getChannel(), // 1
                                 clientToKick.getNickname(), // 2
                                 getMessage() // 3
@@ -88,7 +88,7 @@ public class KickMessage extends BaseMessage {
                 channel.sendMessageToClients(
                         MessageFormat.format(
                                 ":{0} KICK {1} {2}\r\n",
-                                sender.getPrefix(), // 0
+                                sender.getMask(), // 0
                                 getChannel(), // 1
                                 clientToKick.getNickname() // 2
                         )

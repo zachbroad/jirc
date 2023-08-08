@@ -40,7 +40,7 @@ public class PartMessage extends BaseMessage {
          * 2 - leave message
          */
         String preFormat = ":{0} PART {1} :{2}\r\n";
-        String postFormat = MessageFormat.format(preFormat, sender.getPrefix(), getChannel(), getLeaveMessage());
+        String postFormat = MessageFormat.format(preFormat, sender.getMask(), getChannel(), getLeaveMessage());
         channel.sendMessageToClients(postFormat);
         IrcServer.instance.broadcastMessage(postFormat);
     }

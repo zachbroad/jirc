@@ -3,6 +3,7 @@ package JIRC;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.stream.Collectors;
 
 public class Responses {
 
@@ -141,6 +142,39 @@ public class Responses {
         client.sendMessage(topicMsgPost);
     }
 
+    /**
+     * 353 RPL_ENDOFNAMES
+     * "<channel> :End of NAMES list"
+     */
+    public static void sendNameReply(IrcClient client, IrcChannel channel) {
+        String namesInChanSepBySpace = channel.getClients().stream()
+                .map(IrcClient::getNickname)
+                .collect(Collectors.joining());
+
+        client.sendMessage(MessageFormat.format(
+                ":{0} {1} {2} {3} :{4}\r\n",
+                IrcServer.instance.IRC_HOSTNAME, // 0
+                Numerics.RPL_NAMREPLY, // 1
+                client.getNickname(), // 2
+                channel.getNameWithType(), // 3
+                namesInChanSepBySpace // 4
+        ));
+    }
+
+    /**
+     * 366 RPL_ENDOFNAMES
+     * "<channel> :End of NAMES list"
+     */
+    public static void sendEndOfNames(IrcClient client, IrcChannel channel) {
+        client.sendMessage(MessageFormat.format(
+                ":{0} {1} {2} {3}\r\n",
+                IrcServer.instance.IRC_HOSTNAME, // 0
+                Numerics.RPL_ENDOFNAMES, // 1
+                client.getNickname(), // 2
+                channel.getName() // 3
+        ));
+    }
+
 
     /**
      * 375 RPL_MOTDSTART
@@ -199,10 +233,11 @@ public class Responses {
     public static void sendTimeMessage(IrcClient client) {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss");
         client.sendMessage(MessageFormat.format(
-                ":{0} {1} {0} :{2}\r\n",
+                ":{0} {1} {3} {0} :{2}\r\n",
                 IrcServer.instance.IRC_HOSTNAME, // 0
                 Numerics.RPL_TIME, // 1
-                dateTimeFormatter.format(LocalDateTime.now()) // 2
+                dateTimeFormatter.format(LocalDateTime.now()), // 2
+                client.getNickname()
         ));
     }
 

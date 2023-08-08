@@ -19,7 +19,7 @@ public class PrivMsgMessage extends BaseMessage {
     @Override
     public void handle() {
         String preFormat = ":{0} PRIVMSG {1} {2}\r\n";
-        String postFormat = MessageFormat.format(preFormat, sender.getPrefix(), target, userMessage);
+        String postFormat = MessageFormat.format(preFormat, sender.getMask(), target, userMessage);
 
         if (IrcChannel.isValidChannelName(target)) {
             // send to channel

@@ -38,7 +38,7 @@ public class IrcClient {
      *
      * @return NICKNAME!USERNAME@IPADDRESS
      */
-    public String getPrefix() {
+    public String getMask() {
         return "%s!%s@%s".formatted(nickname, username, socket.getInetAddress().getHostAddress());
     }
 
@@ -103,7 +103,7 @@ public class IrcClient {
         server.broadcastMessage(toBroadcast);
 
         String joinMsgPre = ":{0} JOIN {1}\r\n";
-        String joinMsgPost = MessageFormat.format(joinMsgPre, this.getPrefix(), channel.getName());
+        String joinMsgPost = MessageFormat.format(joinMsgPre, this.getMask(), channel.getName());
 
         this.sendMessage(joinMsgPost);
 
