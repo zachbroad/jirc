@@ -205,11 +205,11 @@ public class IrcClient {
         this.socket = socket;
     }
 
-    public Channel getChannel() {
+    public Channel getNetworkChannel() {
         return channel;
     }
 
-    public void setChannel(Channel channel) {
+    public void setNetworkChannel(Channel channel) {
         this.channel = channel;
     }
 
@@ -235,5 +235,9 @@ public class IrcClient {
 
     public void setVisible(boolean visible) {
         this.visible = visible;
+    }
+
+    public List<IrcChannel> getChannels() {
+        return this.channels;
     }
 }
