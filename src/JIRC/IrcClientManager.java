@@ -31,9 +31,11 @@ public class IrcClientManager {
      * @param client to remove
      */
     public void removeClient(IrcClient client) {
+        // Remove from all channels
         for (IrcChannel channel : client.getChannels())
             channel.removeClientFromConnected(client);
 
+        // Remove the client from ClientManager
         this.clients.remove(client);
         client = null;
     }

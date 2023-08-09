@@ -17,8 +17,8 @@ public class Responses {
                         ":{0} {1} {2} :Welcome to the Internet Relay Network {2}!{3}@{0}\r\n",
                         IrcServer.instance.IRC_HOSTNAME, // 0
                         Numerics.RPL_YOURHOST, // 1
-                        client.getNickname(),
-                        client.getUsername()
+                        client.getNickname(), // 2
+                        client.getUsername() // 3
                 )
         );
     }
@@ -47,7 +47,7 @@ public class Responses {
                 IrcServer.instance.IRC_HOSTNAME, // 0
                 Numerics.RPL_CREATED, // 1
                 client.getNickname(), // 2
-                IrcServer.instance.dateTimeCreated.toString() // 3
+                IrcServer.instance.dateTimeCreated // 3
         ));
     }
 
@@ -61,7 +61,7 @@ public class Responses {
                 IrcServer.instance.IRC_HOSTNAME, // 0
                 Numerics.RPL_MYINFO, // 1
                 client.getNickname(), // 2
-                IrcServer.instance.dateTimeCreated.toString(), // 3
+                IrcServer.instance.dateTimeCreated, // 3
                 IrcServer.instance.serverName // 4
         ));
     }
@@ -110,6 +110,87 @@ public class Responses {
     }
 
     /**
+     * 311 RPL_WHOISUSER
+     * "<nick> <user> <host> * :<real name>"
+     */
+    public static void sendWhoIsUser(IrcClient client, IrcClient whoIsClient) {
+        client.sendMessage(MessageFormat.format(
+                ":{0} {1} {2} {3} {4} {5} * :{6}\r\n",
+                IrcServer.instance.IRC_HOSTNAME, // 0
+                Numerics.RPL_WHOISUSER, // 1
+                client.getNickname(), // 2
+                whoIsClient.getNickname(), // 3
+                whoIsClient.getUsername(), // 4
+                whoIsClient.getIpAddress(), // 5
+                whoIsClient.getRealname() // 6
+        ));
+    }
+
+    /**
+     * 312 RPL_WHOISSERVER
+     * "<nick> <server> :<server info>"
+     */
+    public static void sendWhoIsServer(IrcClient client, IrcClient whoIsClient) {
+        client.sendMessage(MessageFormat.format(
+                ":{0} {1} {2} {3} {4} :{5}\r\n",
+                IrcServer.instance.IRC_HOSTNAME, // 0
+                Numerics.RPL_WHOISSERVER, // 1
+                client.getNickname(), // 2
+                whoIsClient.getNickname(), // 3
+                IrcServer.instance.IRC_HOSTNAME, // 4
+                IrcServer.instance.getServerInfo() // 5
+        ));
+    }
+
+    /**
+     * 313 RPL_WHOISOPERATOR
+     * "<nick> :is an IRC operator"
+     */
+    public static void sendWhoIsOperator(IrcClient client, IrcClient whoIsClient) {
+        client.sendMessage(MessageFormat.format(
+                ":{0} {1} {2} {3} :is an IRC operator\r\n",
+                IrcServer.instance.IRC_HOSTNAME, // 0
+                Numerics.RPL_WHOISOPERATOR, // 1
+                client.getNickname(), // 2
+                whoIsClient.getNickname() // 3
+        ));
+    }
+
+    /**
+     * 314    RPL_WHOWASUSER
+     *               "<nick> <user> <host> * :<real name>"
+     */
+
+    /**
+     * 313 RPL_WHOISIDLE
+     * "<nick> :is an IRC operator"
+     */
+    public static void sendWhoIsIdle(IrcClient client, IrcClient whoIsClient) {
+        client.sendMessage(MessageFormat.format(
+                ":{0} {1} {2} TODO :seconds idle\r\n",
+                IrcServer.instance.IRC_HOSTNAME, // 0
+                Numerics.RPL_WHOISIDLE, // 1
+                client.getNickname(), // 2
+                client.getSecondsIdle() // 3
+        ));
+    }
+
+
+    /**
+     * 318 RPL_ENDOFWHOIS
+     * "<nick> :End of WHOIS list"
+     */
+    public static void sendEndOfWhoIs(IrcClient client, IrcClient whoIsClient) {
+        client.sendMessage(MessageFormat.format(
+                ":{0} {1} {2} {3} :End of WHOIS list\r\n",
+                IrcServer.instance.IRC_HOSTNAME, // 0
+                Numerics.RPL_ENDOFWHOIS, // 1
+                client.getNickname(), // 2
+                whoIsClient.getNickname() // 3
+        ));
+    }
+
+    /**
      * 331 RPL_NOTOPIC
      * "<channel> :No topic is set"
      */
@@ -117,10 +198,10 @@ public class Responses {
         String topicMsgPre = ":{0} {1} {2} {3} :No topic is set\r\n";
         String topicMsgPost = MessageFormat.format(
                 topicMsgPre,
-                IrcServer.instance.IRC_HOSTNAME,
-                Numerics.RPL_TOPIC,
-                client.getNickname(),
-                channel.getName()
+                IrcServer.instance.IRC_HOSTNAME, // 0
+                Numerics.RPL_NOTOPIC, // 1
+                client.getNickname(), // 2
+                channel.getName() // 3
         );
         client.sendMessage(topicMsgPost);
     }
@@ -133,11 +214,11 @@ public class Responses {
         String topicMsgPre = ":{0} {1} {2} {3} :{4}\r\n";
         String topicMsgPost = MessageFormat.format(
                 topicMsgPre,
-                IrcServer.instance.IRC_HOSTNAME,
-                Numerics.RPL_TOPIC,
-                client.getNickname(),
-                channel.getName(),
-                channel.getTopic()
+                IrcServer.instance.IRC_HOSTNAME, // 0
+                Numerics.RPL_TOPIC, // 1
+                client.getNickname(), // 2
+                channel.getName(), // 3
+                channel.getTopic() // 4
         );
         client.sendMessage(topicMsgPost);
     }
@@ -167,11 +248,25 @@ public class Responses {
      */
     public static void sendEndOfNames(IrcClient client, IrcChannel channel) {
         client.sendMessage(MessageFormat.format(
-                ":{0} {1} {2} {3}\r\n",
+                ":{0} {1} {2} {3} :End of NAMES list\r\n",
                 IrcServer.instance.IRC_HOSTNAME, // 0
                 Numerics.RPL_ENDOFNAMES, // 1
                 client.getNickname(), // 2
                 channel.getName() // 3
+        ));
+    }
+
+    /**
+     * 369 RPL_ENDOFWHOWAS
+     * "<nick> :End of WHOWAS"
+     */
+    public static void sendEndOfWhoWas(IrcClient client, IrcClient whoWasClient) {
+        client.sendMessage(MessageFormat.format(
+                ":{0} {1} {2} {3} :End of WHOWAS\r\n",
+                IrcServer.instance.IRC_HOSTNAME, // 0
+                Numerics.RPL_ENDOFWHOWAS, // 1
+                client.getNickname(), // 2
+                whoWasClient.getNickname() // 3
         ));
     }
 
@@ -182,6 +277,7 @@ public class Responses {
      * 376 RPL_ENDOFMOTD
      */
     public static void sendMotdMessage(IrcClient client) {
+        // RPL_MOTDSTART
         client.sendMessage(MessageFormat.format(
                 ":{0} {1} {2} :- {3} Message of the day - \r\n",
                 IrcServer.instance.IRC_HOSTNAME, // 0
@@ -189,6 +285,8 @@ public class Responses {
                 client.getNickname(), // 2
                 IrcServer.instance.serverName // 3
         ));
+
+        // RPL_MOTD
         for (String motdLine : IrcServer.instance.motd) {
             client.sendMessage(MessageFormat.format(
                     ":{0} {1} {2} :- {3}\r\n",
@@ -198,6 +296,8 @@ public class Responses {
                     motdLine // 3
             ));
         }
+
+        // RPL_ENDOFMOTD
         client.sendMessage(MessageFormat.format(
                 ":{0} {1} {2} :End of MOTD command\r\n",
                 IrcServer.instance.IRC_HOSTNAME, // 0
@@ -237,7 +337,7 @@ public class Responses {
                 IrcServer.instance.IRC_HOSTNAME, // 0
                 Numerics.RPL_TIME, // 1
                 dateTimeFormatter.format(LocalDateTime.now()), // 2
-                client.getNickname()
+                client.getNickname() // 3
         ));
     }
 
@@ -247,15 +347,16 @@ public class Responses {
      ****************************************************************************/
 
     /**
-     * ERR_NOSUCHNICK
+     * 401 ERR_NOSUCHNICK
      * "<nickname> :No such nick/channel"
      */
     public static void errorNoSuchNick(IrcClient client, String nickname) {
         String message = MessageFormat.format(
-                ":{0} {1} {2} :No such nickname\r\n",
-                IrcServer.instance.IRC_HOSTNAME,
-                Numerics.ERR_NOSUCHNICK,
-                nickname
+                ":{0} {1} {2} {3}:No such nickname\r\n",
+                IrcServer.instance.IRC_HOSTNAME, // 0
+                Numerics.ERR_NOSUCHNICK, // 1
+                client.getNickname(), // 2
+                nickname // 3
         );
         client.sendMessage(message);
     }
@@ -266,10 +367,25 @@ public class Responses {
      */
     public static void errorNoSuchChannel(IrcClient client, String channelName) {
         String message = MessageFormat.format(
-                ":{0} {1} {2} :No such channel\r\n",
-                IrcServer.instance.IRC_HOSTNAME,
-                Numerics.ERR_NOSUCHCHANNEL,
-                channelName
+                ":{0} {1} {2} {3} :No such channel\r\n",
+                IrcServer.instance.IRC_HOSTNAME, // 0
+                Numerics.ERR_NOSUCHCHANNEL, // 1
+                client.getNickname(), // 2
+                channelName // 3
+        );
+        client.sendMessage(message);
+    }
+
+    /**
+     * 431 ERR_NONICKNAMEGIVEN
+     * ":No nickname given"
+     */
+    public static void errorNoNicknameGiven(IrcClient client) {
+        String message = MessageFormat.format(
+                ":{0} {1} {2} :No nickname given\r\n",
+                IrcServer.instance.IRC_HOSTNAME, // 0
+                Numerics.ERR_NOSUCHCHANNEL, // 1
+                client.getNickname() // 2
         );
         client.sendMessage(message);
     }
@@ -283,11 +399,11 @@ public class Responses {
     public static void errorUserNotInChannel(IrcClient client, String targetName, String channelName) {
         String message = MessageFormat.format(
                 ":{0} {1} {2} {3} {4} :They aren''t on that channel\r\n",
-                IrcServer.instance.IRC_HOSTNAME,
-                Numerics.ERR_NOTONCHANNEL,
-                client.getNickname(),
-                channelName,
-                targetName
+                IrcServer.instance.IRC_HOSTNAME, // 0
+                Numerics.ERR_NOTONCHANNEL, // 1
+                client.getNickname(), // 2
+                channelName, // 3
+                targetName // 4
         );
         client.sendMessage(message);
     }
@@ -302,9 +418,9 @@ public class Responses {
     public static void errorNotOnChannel(IrcClient client, String channelName) {
         String postFormat = MessageFormat.format(
                 ":{0} {1} {2} :You''re not on that channel\r\n",
-                IrcServer.instance.IRC_HOSTNAME,
-                Numerics.ERR_NOTONCHANNEL,
-                channelName
+                IrcServer.instance.IRC_HOSTNAME, // 0
+                Numerics.ERR_NOTONCHANNEL, // 1
+                channelName // 2
         );
         client.sendMessage(postFormat);
     }
@@ -315,11 +431,12 @@ public class Responses {
      */
     public static void errorUserOnChannel(IrcClient client, String username, String channelName) {
         String postFormat = MessageFormat.format(
-                ":{0} {1} {2} {3} :is already on channel\r\n",
-                IrcServer.instance.IRC_HOSTNAME,
-                Numerics.ERR_USERONCHANNEL,
-                username,
-                channelName
+                ":{0} {1} {2} {3} {4} :is already on channel\r\n",
+                IrcServer.instance.IRC_HOSTNAME, // 0
+                Numerics.ERR_USERONCHANNEL, // 1
+                client.getNickname(), // 2
+                username, // 3
+                channelName // 4
         );
         client.sendMessage(postFormat);
     }
@@ -334,7 +451,7 @@ public class Responses {
                 IrcServer.instance.IRC_HOSTNAME, // 0
                 Numerics.ERR_NEEDMOREPARAMS, // 1
                 client.getNickname(), // 2
-                command
+                command // 3
         ));
     }
 
@@ -398,7 +515,7 @@ public class Responses {
                 IrcServer.instance.IRC_HOSTNAME, // 0
                 Numerics.ERR_CHANOPRIVSNEEDED, // 1
                 client.getNickname(), // 2
-                channel
+                channel // 3
         ));
     }
 

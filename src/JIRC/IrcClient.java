@@ -3,25 +3,39 @@ package JIRC;
 import java.net.Socket;
 import java.nio.channels.Channel;
 import java.text.MessageFormat;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+
+/*
+ *  TODO: validate that username doesn't have illegal chars used for channels
+ */
+
 public class IrcClient {
-    private final IrcServer server = IrcServer.instance;
-    private final IrcClientManager clientManager;
-    private String nickname;
-    private String username;
-    private String realname;
-    private String awayMessage;
-    private boolean away;
-    private Socket socket;
+    private final IrcClientManager clientManager; // reference to IrcServer singleton's clientManager obj
+    private final IrcServer server = IrcServer.instance; // reference to IrcServer singleton
+    private final List<IrcChannel> channels = new ArrayList<>(); // channels that user is conn. to
+
+    // Network stuff
     private Channel channel;
+    private Socket socket;
     private String ipAddress;
-    private boolean registered;
-    private boolean visible;
+
+    // User profile stuff
+    private String awayMessage;
+    private String nickname;
+    private String realname;
+    private String username;
+
+    // Status
+    private boolean away;
+    private LocalDateTime dateTimeWentAway; // TODO: Implement away since returns seconds since awayAt
     private boolean operator;
-    private List<IrcChannel> channels = new ArrayList<>();
+    private boolean registered;
+    private boolean visible; // used for invisible users todo: implement this
 
     public IrcClient() {
         clientManager = server.clientManager;
@@ -42,12 +56,19 @@ public class IrcClient {
         return "%s!%s@%s".formatted(nickname, username, socket.getInetAddress().getHostAddress());
     }
 
+    /**
+     * Give the client server-op
+     */
     public void giveOperatorPerms() {
         this.operator = true;
     }
 
+    /**
+     * Check if the user is a server-op
+     * TODO: accept param for channel to see if chanop, if server-op always TRUE
+     * @return client's operator status
+     */
     public boolean isOperator() {
-        // TODO: CHANNEL OPERATORS
         return this.operator;
     }
 
@@ -70,10 +91,18 @@ public class IrcClient {
         server.sendMessageToClient(message, this);
     }
 
+    /**
+     * Remove channel to connected list
+     * @param channel to remove
+     */
     public void removeChannelFromConnected(IrcChannel channel) {
         channels.remove(channel);
     }
 
+    /**
+     * Add channel to connected list
+     * @param channel to add
+     */
     public void addChannelToConnected(IrcChannel channel) {
         channels.add(channel);
     }
@@ -147,7 +176,10 @@ public class IrcClient {
         return this.joinChannel(channelToJoin);
     }
 
-    // Return all unique clients that are in a channel with this client
+    /**
+     * Return all unique clients that are in a channel with this client
+     * @return a unique set of clients
+     */
     public HashSet<IrcClient> getRelatedClients() {
         HashSet<IrcClient> clients = new HashSet<>();
         for (var c : channels) {
@@ -194,7 +226,17 @@ public class IrcClient {
     }
 
     public void setAway(boolean status) {
+        if (status) {
+            dateTimeWentAway = LocalDateTime.now();
+        } else {
+            dateTimeWentAway = null;
+        }
+
         this.away = status;
+    }
+
+    public long getSecondsIdle() {
+        return ChronoUnit.SECONDS.between(LocalDateTime.now(), dateTimeWentAway);
     }
 
     public Socket getSocket() {
@@ -237,6 +279,10 @@ public class IrcClient {
         this.visible = visible;
     }
 
+    /**
+     * Get all channels that the client is currently connected to
+     * @return a list of unique channels
+     */
     public List<IrcChannel> getChannels() {
         return this.channels;
     }

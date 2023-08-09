@@ -19,16 +19,34 @@ public class Numerics {
     public static final int RPL_UNAWAY = 305; // ":You are no longer marked as being away"
     public static final int RPL_NOWAWAY = 306; // ":You have been marked as being away"
 
+    // WHOIS
+    public static final int RPL_WHOISUSER = 311; // "<nick> <user> <host> * :<real name>"
+    public static final int RPL_WHOISSERVER = 312; // "<nick> <server> :<server info>"
+    public static final int RPL_WHOISOPERATOR = 313; // "<nick> is an IRC operator"
+    public static final int RPL_WHOISIDLE = 317; // "<nick> <integer> :seconds idle"
+    public static final int RPL_ENDOFWHOIS = 318; // "<nick> :End of WHOIS list"
+
     // List Channels
     public static final int RPL_LISTSTART = 321; // obsolete
     public static final int RPL_LIST = 322;
     public static final int RPL_LISTEND = 323;
     public static final int RPL_CHANNELMODEIS = 324; // "<channel> <mode> <mode params>"
 
+    // INVITE / SUMMON
+    public static final int RPL_INVITING = 341; // "<channel> <nick>"
+    public static final int RPL_SUMMONING = 342; // "<user> :Summoning user to IRC"
+    public static final int RPL_INVITELIST = 346; // "<channel> <invitemask>"
+    public static final int RPL_ENDOFINVITELIST = 347; // "<channel> :End of channel invite list"
+    public static final int RPL_EXCEPTLIST = 348; // "<channel> <exceptionmask>"
+    public static final int RPL_ENDOFEXCEPTLIST = 349; // "<channel> :End of channel exception list"
+
+    //
+    public static final int RPL_VERSION = 351; // "<version>.<debuglevel> <server> :<comments>"
+
+
     // Topics
     public static final int RPL_NOTOPIC = 331;
     public static final int RPL_TOPIC = 332; // on channel join
-    public static final int RPL_TOPICWHOTIME = 333;
 
     // WHO
     public static final int RPL_WHOREPLY = 352;
@@ -37,13 +55,16 @@ public class Numerics {
     // NAME
     public static final int RPL_NAMREPLY = 353;
     public static final int RPL_ENDOFNAMES = 366; // "<channel> :End of NAMES list"
+    public static final int RPL_ENDOFWHOWAS = 369;
 
     // MOTD
     public static final int RPL_MOTDSTART = 375;
     public static final int RPL_MOTD = 372;
     public static final int RPL_MOTDEND = 376;
+
     // OPER
     public static final int RPL_YOUREOPER = 381;
+
     // MISC
     public static final int RPL_TIME = 391;
 

@@ -29,6 +29,7 @@ public class WhoMessage extends BaseMessage {
     @Override
     public void handle() {
         if (channelName == null) {
+            IrcServer.logger.warning("channelName is null");
             Responses.errorNeedMoreParams(sender, "WHO");
             return;
         }
@@ -45,29 +46,33 @@ public class WhoMessage extends BaseMessage {
             return;
         }
 
+
+        IrcServer.logger.info("Sending WHO list");
         for (var c : channel.getClients()) {
+            IrcServer.logger.info("Client %s".formatted(c.toString()));
             sender.sendMessage(
                     MessageFormat.format(
-                            ":{0} {1} {2} {3} {4} {5} {6} H :0 {7}\r\n",
+                            ":{0} {1} {2} {3} {4} {5} {6} {7} H :0 {8}\r\n",
                             server.IRC_HOSTNAME, // 0
                             Numerics.RPL_WHOREPLY, // 1
                             sender.getNickname(), // 2
                             channel.getName(), // 3
                             c.getUsername(), //4
                             c.getIpAddress(), //5
-                            c.getNickname(),// 6
-                            c.getRealname()
+                            server.IRC_HOSTNAME, // 6
+                            c.getNickname(),// 7
+                            c.getRealname()// 8
                     )
             );
         }
-        server.sendMessageToClient(
+        sender.sendMessage(
                 MessageFormat.format(
                         ":{0} {1} {2} {3} :End of /WHO list\r\n",
                         server.IRC_HOSTNAME, // 0
                         Numerics.RPL_ENDOFWHO, // 1
                         sender.getNickname(), // 2
                         channelName
-                ), sender
+                )
         );
     }
 }

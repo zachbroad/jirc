@@ -128,6 +128,13 @@ public class MessageTests {
     }
 
     @Test
+    void testWhoIsMessage() {
+        IrcMessage message = new IrcMessage("WHO zach");
+        WhoIsMessage whoIsMessage = new WhoIsMessage(message, client);
+        assertEquals(whoIsMessage.getNickname(), "zach");
+    }
+
+    @Test
     void testKickMessage() {
         IrcMessage message = new IrcMessage("KICK #channel zach test");
         KickMessage kickMessage = new KickMessage(message, client);

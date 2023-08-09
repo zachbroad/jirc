@@ -51,6 +51,10 @@ public class IrcServer {
         IrcOperator.parseOperators();
     }
 
+    public String getServerInfo() {
+        return "SERVER INFO HERE TODO";
+    }
+
     public String getPrefix() {
         return "%s@%s".formatted(serverName, IRC_HOSTNAME);
     }
@@ -152,7 +156,10 @@ public class IrcServer {
                 }
                 outputStream.flush();
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                clientManager.removeClient(client);
+                // TODO: Figure out IOException: Broken pipe -- can it happen without user disconnecting?
+                e.printStackTrace();
+//                throw new RuntimeException(e);
             }
         }).start();
     }
