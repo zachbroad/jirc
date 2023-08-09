@@ -35,6 +35,7 @@ also allows one-on-one communication via private messages.
 - [x] MOTD: Retrieves the "Message of the Day".
 - [x] NAMES: Lists users in a channel or all channels.
 - [x] NICK: Changes or sets a user's nickname.
+- [x] NOTICE: Sends a notice message to a user or channel.
 - [x] OPER: Authenticates as an IRC operator.
 - [x] PART: Leaves one or more channels.
 - [x] PING: Checks for an active client or server connection.
@@ -55,7 +56,6 @@ also allows one-on-one communication via private messages.
 - [ ] ERROR: Reports an error message.
 - [ ] LINKS: Lists all server links known by the server answering the query.
 - [ ] LUSERS: Returns statistics about the size of the network.
-- [ ] NOTICE: Sends a notice message to a user or channel.
 - [ ] PASS: Sets a connection password during registration.
 - [ ] PONG: Response to a PING message, confirming the connection is alive.
 - [ ] REHASH: Forces the server to reload or update its configuration.

@@ -85,7 +85,9 @@ public class IrcMessageProcessor {
             case "PRIVMSG" -> {
                 new PrivMsgMessage(ircMessage, client).handle();
             }
-            case "NOTICE" -> {}
+            case "NOTICE" -> {
+                new NoticeMessage(ircMessage, client).handle();
+            }
             case "LUSERS" -> {}
             case "VERSION" -> {}
             case "STATS" -> {}
