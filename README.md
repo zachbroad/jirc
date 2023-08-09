@@ -23,6 +23,7 @@ also allows one-on-one communication via private messages.
 
 ## Implemented Commands
 
+- [X] DIE: Shuts the server down.
 - [x] AWAY: Marks user as away or returns them.
 - [x] INFO: Returns information about a server's configuration.
 - [x] INVITE: Invites a user to a channel.
@@ -52,7 +53,6 @@ also allows one-on-one communication via private messages.
 
 - [ ] ADMIN: Retrieves administrative details about a server.
 - [ ] CONNECT: Forces a server to try to establish a new connection to another server.
-- [ ] DIE: Shuts the server down.
 - [ ] ERROR: Reports an error message.
 - [ ] LINKS: Lists all server links known by the server answering the query.
 - [ ] LUSERS: Returns statistics about the size of the network.
