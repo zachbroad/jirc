@@ -3,7 +3,7 @@ package JIRC;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class IrcClientManager {
-    ConcurrentLinkedQueue<IrcClient> clients;
+    private final ConcurrentLinkedQueue<IrcClient> clients;
 
     public IrcClientManager() {
         clients = new ConcurrentLinkedQueue<>();
@@ -21,7 +21,7 @@ public class IrcClientManager {
      *
      * @param client to add
      */
-    void createClient(IrcClient client) {
+    void addClient(IrcClient client) {
         this.clients.add(client);
     }
 
@@ -50,4 +50,17 @@ public class IrcClientManager {
         // TODO ADD MORE REG & broadcast to server
         client.setRegistered(true);
     }
+
+    public ConcurrentLinkedQueue<IrcClient> getClients() {
+        return clients;
+    }
+
+    public int howManyConnectedClients() {
+        return clients.size();
+    }
+
+    public boolean hasClient(IrcClient client) {
+        return clients.contains(client);
+    }
+
 }

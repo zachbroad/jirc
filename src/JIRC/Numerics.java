@@ -92,5 +92,6 @@ public class Numerics {
     public static final int ERR_NOOPERHOST = 491;
 
     // Info
-    public static final int RPL_INFO = 371;
+    public static final int RPL_INFO = 371; // ":<string>"
+    public static final int RPL_ENDOFINFO = 374; // "End of INFO list"
 }

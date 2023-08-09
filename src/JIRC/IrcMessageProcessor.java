@@ -96,7 +96,9 @@ public class IrcMessageProcessor {
             case "CONNECT" -> {}
             case "TRACE" -> {}
             case "ADMIN" -> {}
-            case "INFO" -> {}
+            case "INFO" -> {
+                new InfoMessage(ircMessage, client).handle();
+            }
             case "SERVLIST" -> {}
             case "SQUERY" -> {}
 
@@ -124,6 +126,9 @@ public class IrcMessageProcessor {
             }
             case "ISON" -> {
                 new IsonMessage(ircMessage, client).handle();
+            }
+            case "RESTART" -> {
+                new RestartMessage(ircMessage, client).handle();
             }
             case "BACK" -> {
                 new AwayMessage(new IrcMessage("BACK"), client).handle();

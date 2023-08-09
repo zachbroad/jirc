@@ -47,7 +47,7 @@ public class Responses {
                 IrcServer.instance.IRC_HOSTNAME, // 0
                 Numerics.RPL_CREATED, // 1
                 client.getNickname(), // 2
-                IrcServer.instance.dateTimeCreated // 3
+                IrcServer.instance.getDateTimeCreated() // 3
         ));
     }
 
@@ -61,7 +61,7 @@ public class Responses {
                 IrcServer.instance.IRC_HOSTNAME, // 0
                 Numerics.RPL_MYINFO, // 1
                 client.getNickname(), // 2
-                IrcServer.instance.dateTimeCreated, // 3
+                IrcServer.instance.getDateTimeCreated(), // 3
                 IrcServer.instance.serverName // 4
         ));
     }
@@ -286,6 +286,38 @@ public class Responses {
         ));
     }
 
+    /**
+     * 371 RPL_INFO
+     * ":<string>"
+     */
+    public static void sendInfo(IrcClient client, String info) {
+        client.sendMessage(MessageFormat.format(
+                ":{0} {1} {2} :{3}\r\n",
+                IrcServer.instance.IRC_HOSTNAME, // 0
+                Numerics.RPL_INFO, // 1
+                client.getNickname(), // 2
+                info // 3
+        ));
+    }
+
+    /**
+     * 374 RPL_ENDOFINFO
+     * ":End of INFO list"
+     * =====================================================
+     * A server responding to an INFO message is required to
+     * send all its 'info' in a series of RPL_INFO messages
+     * with a RPL_ENDOFINFO reply to indicate the end of the
+     * replies.
+     */
+    public static void sendEndOfInfo(IrcClient client) {
+        client.sendMessage(MessageFormat.format(
+                ":{0} {1} {2} :End of INFO list\r\n",
+                IrcServer.instance.IRC_HOSTNAME, // 0
+                Numerics.RPL_INFO, // 1
+                client.getNickname() // 2
+        ));
+    }
+
 
     /**
      * 375 RPL_MOTDSTART
@@ -303,7 +335,7 @@ public class Responses {
         ));
 
         // RPL_MOTD
-        for (String motdLine : IrcServer.instance.motd) {
+        for (String motdLine : IrcServer.instance.getMotd()) {
             client.sendMessage(MessageFormat.format(
                     ":{0} {1} {2} :- {3}\r\n",
                     IrcServer.instance.IRC_HOSTNAME, // 0
@@ -319,7 +351,7 @@ public class Responses {
                 IrcServer.instance.IRC_HOSTNAME, // 0
                 Numerics.RPL_MOTDEND, // 1
                 client.getNickname(), // 2
-                IrcServer.instance.motd // 3
+                IrcServer.instance.getMotd() // 3
         ));
     }
 

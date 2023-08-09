@@ -24,7 +24,9 @@ also allows one-on-one communication via private messages.
 ## Implemented Commands
 
 - [x] AWAY: Marks user as away or returns them.
+- [x] INFO: Returns information about a server's configuration.
 - [x] INVITE: Invites a user to a channel.
+- [x] ISON: Checks if certain nicks are online.
 - [x] JOIN: Joins one or more channels.
 - [x] KICK: Removes a user from a channel.
 - [x] KILL: Removes a user from the server (used by operators).
@@ -38,6 +40,7 @@ also allows one-on-one communication via private messages.
 - [x] PING: Checks for an active client or server connection.
 - [x] PRIVMSG: Sends a private message to a user or channel.
 - [x] QUIT: Quits from the server.
+- [x] RESTART: Restarts the server.
 - [x] TIME: Requests the local time from a server.
 - [x] TOPIC: Gets or sets the topic for a channel.
 - [x] USER: Used at login to specify user information.
@@ -50,15 +53,12 @@ also allows one-on-one communication via private messages.
 - [ ] CONNECT: Forces a server to try to establish a new connection to another server.
 - [ ] DIE: Shuts the server down.
 - [ ] ERROR: Reports an error message.
-- [ ] INFO: Returns information about a server's configuration.
-- [ ] ISON: Checks if certain nicks are online.
 - [ ] LINKS: Lists all server links known by the server answering the query.
 - [ ] LUSERS: Returns statistics about the size of the network.
 - [ ] NOTICE: Sends a notice message to a user or channel.
 - [ ] PASS: Sets a connection password during registration.
 - [ ] PONG: Response to a PING message, confirming the connection is alive.
 - [ ] REHASH: Forces the server to reload or update its configuration.
-- [ ] RESTART: Restarts the server.
 - [ ] SERVICE: Registers a new service.
 - [ ] SERVLIST: Lists services currently connected to the network.
 - [ ] SQUERY: Sends a message to a service.
