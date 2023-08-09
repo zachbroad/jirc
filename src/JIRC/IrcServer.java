@@ -31,8 +31,8 @@ public class IrcServer {
     private String dateTimeServerStarted;
     private List<String> motd;
 
-    private boolean isRunning = true;
-    private boolean shouldRestart = false;
+    private volatile boolean isRunning = true;
+    private volatile boolean shouldRestart = false;
 
     public IrcServer() {
         IrcServer.instance = this;
@@ -67,9 +67,13 @@ public class IrcServer {
     void startServer() {
         restart:
         try {
+            logger.info("Server is starting...");
+            shouldRestart = false;
+            isRunning = true;
             ServerSocketChannel server = ServerSocketChannel.open();
             server.configureBlocking(false);
             server.bind(new InetSocketAddress(IRC_PORT));
+            logger.info("Bound to port " + IRC_PORT);
 
             int numThreads = 16;
             ExecutorService executor = Executors.newFixedThreadPool(numThreads);
@@ -87,7 +91,7 @@ public class IrcServer {
                     clientManager.addClient(client);
 
                     executor.execute(() -> {
-                        while (clientManager.hasClient(client)) {
+                        while (clientManager.hasClient(client) && (isRunning && !shouldRestart)) {
                             handleClient(client);
                         }
                     });
@@ -101,18 +105,29 @@ public class IrcServer {
                 }
 
                 if (shouldRestart) {
+                    logger.info("Should restart = true");
                     break restart;
                 }
             }
 
-            executor.shutdown();
+            // TODO:  Send shutdown message to all clients here?
+            logger.info("Server is shutting down...");
+
+            executor.shutdownNow();
+            server.close();
         } catch (IOException | IllegalArgumentException e) {
             e.printStackTrace();
         }
+
+        logger.info("Server has shut down.");
     }
 
-    public void restartServer() {
+    public void restart() {
         shouldRestart = true;
+    }
+
+    public void shutdown() {
+        isRunning = false;
     }
 
     public String getServerInfo() {

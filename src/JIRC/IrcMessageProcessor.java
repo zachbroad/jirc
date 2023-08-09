@@ -132,6 +132,9 @@ public class IrcMessageProcessor {
             case "RESTART" -> {
                 new RestartMessage(ircMessage, client).handle();
             }
+            case "DIE" -> {
+                new DieMessage(ircMessage, client).handle();
+            }
             case "BACK" -> {
                 new AwayMessage(new IrcMessage("BACK"), client).handle();
             }

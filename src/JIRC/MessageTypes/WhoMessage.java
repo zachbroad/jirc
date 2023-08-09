@@ -50,25 +50,25 @@ public class WhoMessage extends BaseMessage {
         IrcServer.logger.info("Sending WHO list");
         for (var c : channel.getClients()) {
             IrcServer.logger.info("Client %s".formatted(c.toString()));
-            String hereGonePrivs = "";
+            String hereOrGone = "";
             if (c.isAway()) {
-                hereGonePrivs.concat("G");
+                hereOrGone = hereOrGone.concat("G");
             } else {
-                hereGonePrivs.concat("H");
+                hereOrGone = hereOrGone.concat("H");
             }
 
+            String privs = "";
             if (c.isOperator()) {
-                hereGonePrivs.concat("@");
+                privs = privs.concat("@");
             } else if (c.hasVoiceInChannel(channel)){
-                hereGonePrivs.concat("+");
+                privs = privs.concat("+");
             } else {
                 continue;
             }
 
-
             sender.sendMessage(
                     MessageFormat.format(
-                            ":{0} {1} {2} {3} {4} {5} {6} {7} {9} :0 {8}\r\n",
+                            ":{0} {1} {2} {3} {4} {5} {6} {7} {9} {10} :0 {8}\r\n",
                             server.IRC_HOSTNAME, // 0
                             Numerics.RPL_WHOREPLY, // 1
                             sender.getNickname(), // 2
@@ -78,7 +78,8 @@ public class WhoMessage extends BaseMessage {
                             server.IRC_HOSTNAME, // 6
                             c.getNickname(),// 7
                             c.getRealname(), // 8
-                            hereGonePrivs
+                            hereOrGone, // 9
+                            privs
                     )
             );
         }

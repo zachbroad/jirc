@@ -66,6 +66,7 @@ public class IrcClient {
     /**
      * Check if the user is a server-op
      * TODO: accept param for channel to see if chanop, if server-op always TRUE
+     *
      * @return client's operator status
      */
     public boolean isOperator() {
@@ -93,6 +94,7 @@ public class IrcClient {
 
     /**
      * Remove channel to connected list
+     *
      * @param channel to remove
      */
     public void removeChannelFromConnected(IrcChannel channel) {
@@ -101,6 +103,7 @@ public class IrcClient {
 
     /**
      * Add channel to connected list
+     *
      * @param channel to add
      */
     public void addChannelToConnected(IrcChannel channel) {
@@ -178,6 +181,7 @@ public class IrcClient {
 
     /**
      * Return all unique clients that are in a channel with this client
+     *
      * @return a unique set of clients
      */
     public HashSet<IrcClient> getRelatedClients() {
@@ -281,6 +285,7 @@ public class IrcClient {
 
     /**
      * Get all channels that the client is currently connected to
+     *
      * @return a list of unique channels
      */
     public List<IrcChannel> getChannels() {
@@ -289,6 +294,19 @@ public class IrcClient {
 
     public boolean hasVoiceInChannel(IrcChannel channel) {
         return true; // TODO: Immplement this
+    }
+
+    public String getNamePrefixChannel(IrcChannel channel) {
+        String prefix = "";
+        if (isOperator()) {
+            prefix = "@";
+        } else if (hasVoiceInChannel(channel)) {
+            prefix = "+";
+        } else {
+            prefix = "";
+        }
+
+        return prefix + nickname;
     }
 
 }

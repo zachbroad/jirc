@@ -18,6 +18,6 @@ public class RestartMessage extends BaseMessage {
         }
 
         // TODO: send message to all clients that server is restarting
-        server.restartServer();
+        server.restart();
     }
 }

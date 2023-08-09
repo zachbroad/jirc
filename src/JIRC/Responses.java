@@ -245,7 +245,7 @@ public class Responses {
      */
     public static void sendNameReply(IrcClient client, IrcChannel channel) {
         String namesInChanSepBySpace = channel.getClients().stream()
-                .map(IrcClient::getNickname)
+                .map(c -> c.getNamePrefixChannel(channel))
                 .collect(Collectors.joining(" "));
 
         client.sendMessage(MessageFormat.format(
