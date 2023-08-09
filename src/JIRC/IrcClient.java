@@ -286,4 +286,9 @@ public class IrcClient {
     public List<IrcChannel> getChannels() {
         return this.channels;
     }
+
+    public boolean hasVoiceInChannel(IrcChannel channel) {
+        return true; // TODO: Immplement this
+    }
+
 }

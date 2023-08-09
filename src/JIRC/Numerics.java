@@ -15,7 +15,8 @@ public class Numerics {
 
     // AWAY
     public static final int RPL_AWAY = 301; // "<nick> :<away message>"
-
+    public static final int RPL_USERHOST = 302; // ":*1<reply> *( " " <reply> )"
+    public static final int RPL_ISON = 303; // ":*1<nick> *( " " <nick> )"
     public static final int RPL_UNAWAY = 305; // ":You are no longer marked as being away"
     public static final int RPL_NOWAWAY = 306; // ":You have been marked as being away"
 

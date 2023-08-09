@@ -122,6 +122,9 @@ public class IrcMessageProcessor {
             case "AWAY" -> {
                 new AwayMessage(ircMessage, client).handle();
             }
+            case "ISON" -> {
+                new IsonMessage(ircMessage, client).handle();
+            }
             case "BACK" -> {
                 new AwayMessage(new IrcMessage("BACK"), client).handle();
             }

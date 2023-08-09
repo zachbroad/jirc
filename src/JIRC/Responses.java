@@ -84,6 +84,22 @@ public class Responses {
     }
 
     /**
+     * RPL_ISON
+     * ":*1<nick> *( " " <nick> )"
+     * - Reply format used by ISON to list replies to the
+     * query list.
+     */
+    public static void sendIsonMessage(IrcClient client, String usersThatAreOn) {
+        client.sendMessage(MessageFormat.format(
+                ":{0} {1} {2} :{3}\r\n",
+                IrcServer.instance.IRC_HOSTNAME, // 0
+                Numerics.RPL_ISON, // 1
+                client.getNickname(), // 2
+                usersThatAreOn
+        ));
+    }
+
+    /**
      * 305 RPL_UNAWAY
      * ":You are no longer marked as being away"
      */
