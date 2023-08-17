@@ -89,7 +89,9 @@ public class IrcMessageProcessor {
                 new NoticeMessage(ircMessage, client).handle();
             }
             case "LUSERS" -> {}
-            case "VERSION" -> {}
+            case "VERSION" -> {
+                new VersionMessage(ircMessage, client).handle();
+            }
             case "STATS" -> {}
             case "LINKS" -> {}
             case "TIME" -> {

@@ -44,7 +44,8 @@ public class IrcClient {
 
     @Override
     public String toString() {
-        return "[JIRC.IrcClient %s@%s]".formatted(nickname, socket.getInetAddress().getHostAddress());
+        return this.getMask();
+//        return "[JIRC.IrcClient %s@%s]".formatted(nickname, socket.getInetAddress().getHostAddress());
     }
 
     /**

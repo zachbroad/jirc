@@ -23,8 +23,8 @@ also allows one-on-one communication via private messages.
 
 ## Implemented Commands
 
-- [X] DIE: Shuts the server down.
 - [x] AWAY: Marks user as away or returns them.
+- [x] DIE: Shuts the server down.
 - [x] INFO: Returns information about a server's configuration.
 - [x] INVITE: Invites a user to a channel.
 - [x] ISON: Checks if certain nicks are online.

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.stream.Stream;
 
 public class IrcChannel {
+    private final String DEFAULT_TOPIC = "This channel has no topic.";
     private String name;
     private String topic;
     private ArrayList<IrcClient> connectedClients = new ArrayList<>();
@@ -11,7 +12,10 @@ public class IrcChannel {
     private boolean secret;
     private boolean priv;
 
-    public IrcChannel() {}
+    public IrcChannel(String name) {
+        this.setName(name);
+        this.setTopic(DEFAULT_TOPIC);
+    }
 
     public IrcChannel(String name, String topic) {
         this.setName(name);

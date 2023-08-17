@@ -5,8 +5,7 @@ import java.util.ArrayList;
 public class IrcChannelManager {
     public ArrayList<IrcChannel> channels = new ArrayList<>();
 
-    public IrcChannelManager() {
-    }
+    public IrcChannelManager() {}
 
     /**
      * Adds channel to server's channel list
@@ -15,7 +14,7 @@ public class IrcChannelManager {
      */
     public void addChannel(IrcChannel channel) {
         this.channels.add(channel);
-        IrcServer.logger.info(String.format("Created channel [%s]".formatted(channel.toString())));
+        IrcServer.logger.info(String.format("Added channel %s to channelManager".formatted(channel.toString())));
     }
 
     /**
@@ -45,5 +44,34 @@ public class IrcChannelManager {
         }
 
         return null;
+    }
+
+    /**
+     * Checks whether a channel with channelName exists
+     *
+     * @param channelName name to check
+     * @return true if exists, false if not
+     */
+    public boolean doesChannelExist(String channelName) {
+        IrcChannel channel = getChannelByName(channelName);
+        return channel != null;
+    }
+
+    public boolean createChannelByName(String channelName) {
+        // Can't create a channel that already exists!
+        if (this.doesChannelExist(channelName)) {
+            return false;
+        }
+
+        // Will return false if too long or contains invalid characters
+        IrcChannel channel = new IrcChannel(channelName);
+        if (!channel.isValid()) {
+            return false;
+        }
+
+        // TODO: does user have permission to create a channel? Everyone can right now, probably keep it that way.
+        // ok we can create the channel
+        addChannel(channel);
+        return true;
     }
 }
