@@ -44,10 +44,11 @@ public class JoinMessage extends BaseMessage {
                 if (sender.attemptJoinChannelByName(channelName)) {
                     new NamesMessage(new IrcMessage("NAMES %s".formatted(channelName)), sender).handle();
                     new WhoMessage(new IrcMessage("WHO %s".formatted(channelName)), sender).handle();
-                    IrcServer.logger.warning("%s joined %s.".formatted(sender, channelName));
+                    IrcServer.logger.info("%s joined %s.".formatted(sender, channelName));
                     successfulJoinCount += 1;
                 } else {
                     // TODO: Failed to join channel handle?
+                    IrcServer.logger.warning("%s failed to join %s".formatted(sender, channelName));
                 }
             }
 

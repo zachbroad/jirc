@@ -49,33 +49,40 @@ also allows one-on-one communication via private messages.
 - [x] WHO: Returns a list of users matching a criteria.
 - [x] WHOIS: Returns information about a user.
 
-## Unimplemented Commands (RFC 2812):
+## Unimplemented Commands (RFC 1459 & RFC 2812):
 
 - [ ] ADMIN: Retrieves administrative details about a server.
-- [ ] CONNECT: Forces a server to try to establish a new connection to another server.
 - [ ] ERROR: Reports an error message.
-- [ ] LINKS: Lists all server links known by the server answering the query.
-- [ ] LUSERS: Returns statistics about the size of the network.
 - [ ] PASS: Sets a connection password during registration.
 - [ ] PONG: Response to a PING message, confirming the connection is alive.
 - [ ] REHASH: Forces the server to reload or update its configuration.
-- [ ] SERVICE: Registers a new service.
-- [ ] SERVLIST: Lists services currently connected to the network.
-- [ ] SQUERY: Sends a message to a service.
-- [ ] SQUIT: Disconnects server links.
 - [ ] STATS: Requests server statistics.
-- [ ] SUMMON: Summons a user to IRC.
-- [ ] TRACE: Finds the route to a user or server.
 - [ ] USERHOST: Returns a list of hostnames for the specified nicknames.
 - [ ] USERS: Returns a list of users logged into the system.
 - [ ] VERSION: Queries the version of a server.
 - [ ] WALLOPS: Sends a message to all operators.
 - [ ] WHOWAS: Returns information about a user who was previously online.
+ 
+## Unimplemented Commands (Unformal):
+- [ ] KNOCK: Sends a NOTICE to an invite-only channel requesting an invite
+
+
+## Commands planned for future
+These commands are unimplemented as they are related to server-to-server communication which is not the current focus.
+- [ ] CONNECT: Forces a server to try to establish a new connection to another server.
+- [ ] LINKS: Lists all server links known by the server answering the query.
+- [ ] LUSERS: Returns statistics about the size of the network.
+- [ ] SERVICE: Registers a new service.
+- [ ] SERVLIST: Lists services currently connected to the network.
+- [ ] SQUERY: Sends a message to a service.
+- [ ] SQUIT: Disconnects server links.
+- [ ] SUMMON: Summons a user to IRC.
+- [ ] TRACE: Finds the route to a user or server.
 
 ## Planned Server Features
 
 - **User Authentication:** Implement a user authentication system to allow each user to have their own username and
-  password.
+  password. Implement NickServ.
 
 - **Persistent Data:** Integrate a database to store persistent data such as chat history or user information.
 

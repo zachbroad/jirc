@@ -389,6 +389,64 @@ public class Responses {
         ));
     }
 
+    /**
+     * 392 RPL_USERSSTART
+     * ":UserID   Terminal  Host"
+     */
+    public static void sendUsersStart(IrcClient client) {
+        client.sendMessage(MessageFormat.format(
+                ":{0} {1} {2} :UserID Terminal Host\r\n",
+                IrcServer.instance.IRC_HOSTNAME, // 0
+                Numerics.RPL_USERSSTART, // 1
+                client.getNickname() // 2
+        ));
+    }
+
+    /**
+     * 393 RPL_USERS
+     * ":<username> <ttyline> <hostname>"
+     */
+    public static void sendUsers(IrcClient client) {
+        // TODO: no users...? would this be for "registered" users vs unregistered? or to comm. with other servers?
+        IrcServer.instance.clientManager.getClients().forEach(c -> {
+            client.sendMessage(MessageFormat.format(
+                    ":{0} {1} {2} :{3} {4} {5}\r\n",
+                    IrcServer.instance.IRC_HOSTNAME, // 0
+                    Numerics.RPL_USERS, // 1
+                    client.getNickname(), // 2
+                    c.getUsername(),
+                    "N/A", // ttyline? todo:?!?!
+                    c.getIpAddress()
+            ));
+        });
+    }
+
+    /**
+     * 392 RPL_ENDOFUSERS
+     * ":End of users"
+     */
+    public static void sendEndOfUsers(IrcClient client) {
+        client.sendMessage(MessageFormat.format(
+                ":{0} {1} {2} :End of users\r\n",
+                IrcServer.instance.IRC_HOSTNAME, // 0
+                Numerics.RPL_ENDOFUSERS, // 1
+                client.getNickname() // 2
+        ));
+    }
+
+    /**
+     * 392 RPL_NOUSERS
+     * ":Nobody logged in"
+     */
+    public static void sendNoUsers(IrcClient client) {
+        client.sendMessage(MessageFormat.format(
+                ":{0} {1} {2} :Nobody logged in\r\n",
+                IrcServer.instance.IRC_HOSTNAME, // 0
+                Numerics.RPL_NOUSERS, // 1
+                client.getNickname() // 2
+        ));
+    }
+
 
     /****************************************************************************
      ***************************** ERRORS ***************************************

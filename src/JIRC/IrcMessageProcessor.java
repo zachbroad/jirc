@@ -89,6 +89,9 @@ public class IrcMessageProcessor {
                 new NoticeMessage(ircMessage, client).handle();
             }
             case "LUSERS" -> {}
+            case "USERS" -> {
+                new UsersMessage(ircMessage, client).handle();
+            }
             case "VERSION" -> {
                 new VersionMessage(ircMessage, client).handle();
             }
